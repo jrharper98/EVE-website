@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tangerine:wght@400;700&family=Radley:ital@0;1&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: #FBF9F3; font-family: 'Radley', Georgia, serif; color: #3d4f2e; }
+  p { margin: 0; }
+  input, textarea, select, button { font-family: 'Radley', Georgia, serif; }
+  a { color: #8a6f2a; text-decoration: none; }
+  a:hover { color: #3d4f2e; }
+  .eve-nav-link:hover { color: #8a6f2a !important; }
+  .eve-in:focus { outline: none; border-color: #B8974A !important; }
+</style>
+</helmet>
+
+<!-- ===================== NAV ===================== -->
+<div style="position:sticky; top:0; z-index:50; background:rgba(251,249,243,.92); backdrop-filter:blur(8px); border-bottom:1px solid #ECE7D8;">
+  <div style="max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:18px 40px;">
+    <span onClick="{{ goHome }}" style="font-family:'Tangerine',cursive; font-weight:700; font-size:52px; line-height:1; color:#8EA86F; cursor:pointer;">EVE</span>
+    <div style="display:flex; align-items:center; gap:36px; font-size:13px; letter-spacing:.16em; text-transform:uppercase;">
+      <span class="eve-nav-link" onClick="{{ goHome }}" style="cursor:pointer; color:{{ cHome }}; transition:color .2s;">Home</span>
+      <span class="eve-nav-link" onClick="{{ goMission }}" style="cursor:pointer; color:{{ cMission }}; transition:color .2s;">Mission</span>
+      <span class="eve-nav-link" onClick="{{ goAbout }}" style="cursor:pointer; color:{{ cAbout }}; transition:color .2s;">About</span>
+      <span class="eve-nav-link" onClick="{{ goEvents }}" style="cursor:pointer; color:{{ cEvents }}; transition:color .2s;">Events</span>
+      <span onClick="{{ openJoin }}" style="padding:11px 24px; background:#8EA86F; border-radius:999px; letter-spacing:.14em; color:#fff; cursor:pointer;">Join</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== HOME ===================== -->
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+<div>
+  <!-- hero -->
+  <div style="background:#F7F5EC;">
+    <div style="max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1.05fr .95fr; align-items:center; gap:24px; padding:60px 40px 56px;">
+      <div>
+        <div style="display:inline-block; padding:7px 16px; margin-bottom:24px; background:#EFE4FA; border-radius:999px; font-size:12px; letter-spacing:.36em; text-transform:uppercase; color:#7d5ea6;">Empower &nbsp;·&nbsp; Value &nbsp;·&nbsp; Elevate</div>
+        <h1 style="margin:0; font-family:'Tangerine',cursive; font-weight:700; font-size:104px; line-height:.9; color:#3d4f2e;">A space to bloom<br>into your fullest self</h1>
+        <p style="max-width:450px; margin:28px 0 0; font-style:italic; font-size:20px; line-height:1.65; color:#4a5c3a;">A women's community for learning, restoration, and connection. Every woman and femme-expressing person is welcome, exactly as she is.</p>
+        <div style="display:flex; align-items:center; gap:26px; margin-top:36px;">
+          <span onClick="{{ openJoin }}" style="padding:16px 34px; background:#8EA86F; color:#fff; border-radius:999px; font-size:15px; letter-spacing:.08em; cursor:pointer;">Join the community</span>
+          <span onClick="{{ goEvents }}" style="font-size:15px; letter-spacing:.04em; color:#8a6f2a; border-bottom:1px solid #E4D3A0; padding-bottom:3px; cursor:pointer;">See upcoming events →</span>
+        </div>
+      </div>
+      <div style="position:relative; height:460px;">
+        <img src="assets/floral/eve-bloom-loose-v3.png" alt="gold peony" style="position:absolute; right:-30px; top:50%; transform:translateY(-50%); width:540px; height:auto;">
+      </div>
+    </div>
+  </div>
+
+  <!-- mission teaser -->
+  <div style="background:#3d4f2e; position:relative; overflow:hidden;">
+    <img src="assets/floral/eve-leaf-sprig-v3.png" alt="" style="position:absolute; left:-40px; bottom:-50px; width:300px; height:auto; opacity:.16;">
+    <img src="assets/floral/eve-leaf-sprig-v3.png" alt="" style="position:absolute; right:-40px; top:-50px; width:300px; height:auto; opacity:.16; transform:rotate(180deg);">
+    <div style="max-width:900px; margin:0 auto; padding:80px 40px; text-align:center; position:relative; z-index:2;">
+      <div style="font-size:13px; letter-spacing:.36em; text-transform:uppercase; color:#B9C9A3; margin-bottom:16px;">Our Mission</div>
+      <p style="font-family:'Tangerine',cursive; font-weight:700; font-size:80px; line-height:.95; color:#E9CF82; margin:0 0 30px;">Here at EVE…</p>
+      <p style="max-width:780px; margin:0 auto; font-style:italic; font-size:23px; line-height:1.7; color:#f1f4ec;">we <span style="color:#E9CF82; font-style:normal;">Empower</span> women to express their femininity with confidence, we <span style="color:#E9CF82; font-style:normal;">Value</span> women for their individuality, and we <span style="color:#E9CF82; font-style:normal;">Elevate</span> women's lifestyles through exposure to new opportunities.</p>
+      <span onClick="{{ goMission }}" style="display:inline-block; margin-top:34px; padding:13px 30px; border:1px solid #7f9268; border-radius:999px; font-size:13px; letter-spacing:.18em; text-transform:uppercase; color:#DCF2C2; cursor:pointer;">Read our full mission →</span>
+    </div>
+  </div>
+
+  <!-- offerings -->
+  <div style="background:#FBF9F3;">
+    <div style="max-width:1200px; margin:0 auto; padding:80px 40px;">
+      <div style="text-align:center; font-size:13px; letter-spacing:.32em; text-transform:uppercase; color:#B8974A; margin-bottom:8px;">What EVE offers</div>
+      <h2 style="text-align:center; margin:0 0 54px; font-family:'Tangerine',cursive; font-weight:700; font-size:66px; color:#3d4f2e;">Three ways to flourish</h2>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:32px;">
+        <div style="text-align:center; padding:40px 30px; background:#fff; border:1px solid #E4D3A0; border-radius:18px;">
+          <img src="assets/floral/eve-leaf-sprig-olive.png" alt="" style="height:104px; width:auto; margin-bottom:18px;">
+          <h3 style="margin:0 0 12px; font-size:24px; color:#8a6f2a;">Learn &amp; Grow</h3>
+          <p style="font-style:italic; font-size:16px; line-height:1.7; color:#5a6b49;">Workshops, guides, and honest community discussion to help you expand.</p>
+        </div>
+        <div style="text-align:center; padding:40px 30px; background:#fff; border:1px solid #E4D3A0; border-radius:18px;">
+          <img src="assets/floral/eve-bud-purple.png" alt="" style="height:104px; width:auto; margin-bottom:18px;">
+          <h3 style="margin:0 0 12px; font-size:24px; color:#8a6f2a;">Luxury &amp; Pampering</h3>
+          <p style="font-style:italic; font-size:16px; line-height:1.7; color:#5a6b49;">Curated experiences that indulge, soften, and restore you fully.</p>
+        </div>
+        <div style="text-align:center; padding:40px 30px; background:#fff; border:1px solid #E4D3A0; border-radius:18px;">
+          <img src="assets/floral/eve-bloom-stem-olive.png" alt="" style="height:104px; width:auto; margin-bottom:18px;">
+          <h3 style="margin:0 0 12px; font-size:24px; color:#8a6f2a;">Career &amp; Networking</h3>
+          <p style="font-style:italic; font-size:16px; line-height:1.7; color:#5a6b49;">Connections and opportunities that elevate the path you're on.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- featured event -->
+  <div style="background:#F3ECFA;">
+    <div style="max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; align-items:center; padding:0 40px;">
+      <div style="padding:72px 0;">
+        <div style="font-size:13px; letter-spacing:.3em; text-transform:uppercase; color:#9a7bc0; margin-bottom:18px;">Next gathering</div>
+        <h2 style="margin:0 0 18px; font-family:'Tangerine',cursive; font-weight:700; font-size:66px; line-height:.95; color:#3d4f2e;">Homemade All-Natural Toothpaste</h2>
+        <p style="font-size:18px; line-height:1.7; color:#4a5c3a; max-width:440px;">Mix your own clean, all-natural toothpaste to take home — a hands-on afternoon of making, sharing, and good company.</p>
+        <div style="display:inline-flex; gap:40px; margin:28px 0 32px; padding:20px 30px; background:#fff; border:1px solid #E4D3A0; border-radius:14px; font-size:15px; color:#3d4f2e;">
+          <div><div style="font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:#B8974A; margin-bottom:6px;">When</div>Late July 2026</div>
+          <div><div style="font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:#B8974A; margin-bottom:6px;">Where</div>Local park / community center</div>
+        </div>
+        <div><span onClick="{{ signupToothpaste }}" style="display:inline-block; padding:16px 34px; background:#8EA86F; color:#fff; border-radius:999px; font-size:15px; letter-spacing:.08em; cursor:pointer;">Sign up for this event</span></div>
+      </div>
+      <div style="position:relative; height:100%; min-height:420px;">
+        <img src="assets/floral/eve-bloom-purple.png" alt="lavender peony" style="position:absolute; right:0; bottom:-30px; width:470px; height:auto;">
+      </div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ===================== MISSION ===================== -->
+<sc-if value="{{ isMission }}">
+<div>
+  <div style="background:#3d4f2e; position:relative; overflow:hidden;">
+    <img src="assets/floral/eve-leaf-sprig-v3.png" alt="" style="position:absolute; left:-40px; bottom:-50px; width:340px; height:auto; opacity:.16;">
+    <img src="assets/floral/eve-leaf-sprig-v3.png" alt="" style="position:absolute; right:-40px; top:-50px; width:340px; height:auto; opacity:.16; transform:rotate(180deg);">
+    <div style="max-width:900px; margin:0 auto; padding:96px 40px; text-align:center; position:relative; z-index:2;">
+      <div style="font-size:13px; letter-spacing:.36em; text-transform:uppercase; color:#B9C9A3; margin-bottom:16px;">Our Mission</div>
+      <p style="font-family:'Tangerine',cursive; font-weight:700; font-size:96px; line-height:.92; color:#E9CF82; margin:0 0 34px;">Here at EVE…</p>
+      <p style="max-width:800px; margin:0 auto; font-style:italic; font-size:25px; line-height:1.7; color:#f1f4ec;">we <span style="color:#E9CF82; font-style:normal;">Empower</span> women to express their femininity with confidence, we <span style="color:#E9CF82; font-style:normal;">Value</span> women for their individuality, and we <span style="color:#E9CF82; font-style:normal;">Elevate</span> women's lifestyles through exposure to new opportunities.</p>
+      <p style="max-width:800px; margin:28px auto 0; font-size:18px; line-height:1.75; color:#dfe7d3;">EVE welcomes all women regardless of age, race, religion, ethnicity, nationality, ability, or sexual orientation. We chose the name EVE to embrace everything created in the feminine energy while simultaneously challenging rigid definitions of what it means to be a woman.</p>
+    </div>
+  </div>
+  <!-- values breakdown -->
+  <div style="max-width:1200px; margin:0 auto; padding:80px 40px;">
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:32px;">
+      <div style="padding:44px 34px; background:#fff; border:1px solid #E4D3A0; border-radius:18px;">
+        <div style="font-family:'Tangerine',cursive; font-weight:700; font-size:64px; line-height:1; color:#8EA86F;">Empower</div>
+        <p style="margin-top:14px; font-style:italic; font-size:17px; line-height:1.7; color:#5a6b49;">To express femininity with confidence — and to move through the world unapologetically ourselves.</p>
+      </div>
+      <div style="padding:44px 34px; background:#fff; border:1px solid #E4D3A0; border-radius:18px;">
+        <div style="font-family:'Tangerine',cursive; font-weight:700; font-size:64px; line-height:1; color:#B8974A;">Value</div>
+        <p style="margin-top:14px; font-style:italic; font-size:17px; line-height:1.7; color:#5a6b49;">Women for their individuality — honoring every story, background, and way of being a woman.</p>
+      </div>
+      <div style="padding:44px 34px; background:#fff; border:1px solid #E4D3A0; border-radius:18px;">
+        <div style="font-family:'Tangerine',cursive; font-weight:700; font-size:64px; line-height:1; color:#9a7bc0;">Elevate</div>
+        <p style="margin-top:14px; font-style:italic; font-size:17px; line-height:1.7; color:#5a6b49;">Women's lifestyles through exposure to new opportunities, spaces, and connections.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ===================== ABOUT ===================== -->
+<sc-if value="{{ isAbout }}">
+<div>
+  <div style="background:#F7F5EC;">
+    <div style="max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1fr .8fr; align-items:center; gap:40px; padding:76px 40px;">
+      <div>
+        <div style="font-size:13px; letter-spacing:.36em; text-transform:uppercase; color:#B8974A; margin-bottom:18px;">About Us</div>
+        <h1 style="margin:0 0 24px; font-family:'Tangerine',cursive; font-weight:700; font-size:96px; line-height:.9; color:#3d4f2e;">A community rooted<br>in feminine energy</h1>
+        <p style="max-width:520px; font-size:19px; line-height:1.75; color:#4a5c3a;">EVE is a women's community brand built to gather women and femme-expressing individuals into spaces where they can learn, restore, and rise. We believe growth is gentler — and lasts longer — when it happens in good company.</p>
+        <p style="max-width:520px; margin-top:18px; font-size:19px; line-height:1.75; color:#4a5c3a;">Every gathering is designed around one of our three core experiences, so there's always a way in — whether you come to learn, to be pampered, or to build your next opportunity.</p>
+      </div>
+      <div style="position:relative; height:420px;">
+        <img src="assets/floral/eve-bloom-loose-v3.png" alt="gold peony" style="position:absolute; right:0; top:50%; transform:translateY(-50%); width:420px; height:auto;">
+      </div>
+    </div>
+  </div>
+
+  <!-- three experiences detailed -->
+  <div style="max-width:1200px; margin:0 auto; padding:80px 40px;">
+    <h2 style="text-align:center; margin:0 0 12px; font-family:'Tangerine',cursive; font-weight:700; font-size:64px; color:#3d4f2e;">Three core experiences</h2>
+    <p style="text-align:center; max-width:600px; margin:0 auto 54px; font-style:italic; font-size:18px; color:#6a6a55;">Every EVE event is an invitation into one of these.</p>
+    <div style="display:flex; flex-direction:column; gap:24px;">
+      <div style="display:grid; grid-template-columns:170px 1fr; align-items:center; gap:36px; padding:36px 40px; background:#fff; border:1px solid #E4D3A0; border-radius:18px;">
+        <img src="assets/floral/eve-leaf-sprig-olive.png" alt="" style="height:130px; width:auto; margin:0 auto;">
+        <div>
+          <h3 style="margin:0 0 10px; font-size:28px; color:#8a6f2a;">Learn &amp; Grow</h3>
+          <p style="font-style:italic; font-size:17px; line-height:1.7; color:#5a6b49; max-width:640px;">Hands-on workshops, thoughtful guides, and honest community discussion — spaces to expand your skills, your perspective, and your sense of what's possible. The toothpaste-making gathering is our first of many.</p>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:170px 1fr; align-items:center; gap:36px; padding:36px 40px; background:#fff; border:1px solid #E4D3A0; border-radius:18px;">
+        <img src="assets/floral/eve-bloom-purple.png" alt="" style="height:130px; width:auto; margin:0 auto;">
+        <div>
+          <h3 style="margin:0 0 10px; font-size:28px; color:#8a6f2a;">Luxury &amp; Pampering</h3>
+          <p style="font-style:italic; font-size:17px; line-height:1.7; color:#5a6b49; max-width:640px;">Curated experiences that indulge, soften, and restore — because rest and beauty are not extras, they're part of how we honor ourselves.</p>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:170px 1fr; align-items:center; gap:36px; padding:36px 40px; background:#fff; border:1px solid #E4D3A0; border-radius:18px;">
+        <img src="assets/floral/eve-bloom-stem-olive.png" alt="" style="height:130px; width:auto; margin:0 auto;">
+        <div>
+          <h3 style="margin:0 0 10px; font-size:28px; color:#8a6f2a;">Career &amp; Networking</h3>
+          <p style="font-style:italic; font-size:17px; line-height:1.7; color:#5a6b49; max-width:640px;">Connections, mentorship, and opportunities that elevate the path you're already on — and open doors to the ones you haven't seen yet.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- the founders -->
+  <div style="background:#F7F5EC;">
+    <div style="max-width:1100px; margin:0 auto; padding:80px 40px;">
+      <div style="text-align:center; font-size:13px; letter-spacing:.32em; text-transform:uppercase; color:#B8974A; margin-bottom:8px;">The women behind EVE</div>
+      <h2 style="text-align:center; margin:0 0 56px; font-family:'Tangerine',cursive; font-weight:700; font-size:64px; color:#3d4f2e;">Meet the founders</h2>
+
+      <!-- Founder: Joslyn -->
+      <div style="display:grid; grid-template-columns:380px 1fr; gap:52px; align-items:start; margin-bottom:64px;">
+        <div>
+          <image-slot id="founder-joslyn" style="width:380px; height:470px; display:block;" shape="rounded" radius="20" placeholder="Drop Joslyn's photo"></image-slot>
+        </div>
+        <div>
+          <div style="font-size:12px; letter-spacing:.28em; text-transform:uppercase; color:#8EA86F; margin-bottom:8px;">Founder</div>
+          <h3 style="margin:0 0 20px; font-family:'Tangerine',cursive; font-weight:700; font-size:68px; line-height:.9; color:#3d4f2e;">Joslyn René Harper</h3>
+          <div style="border-left:3px solid #E4D3A0; padding:4px 0 4px 24px; margin-bottom:26px;">
+            <p style="font-style:italic; font-size:20px; line-height:1.6; color:#4a5c3a;">“I have always had a passion for uplifting those around me. I pride myself on being a person who makes others feel comfortable being who they are. I wear the term ‘hype-woman’ as a badge of honor! I love myself and the life I have been blessed with. I hope to inspire every person I come across to reach the same love I have.”</p>
+          </div>
+          <p style="font-size:17px; line-height:1.8; color:#4a5c3a; margin-bottom:16px;">Joslyn René grew up in the suburbs of Sacramento in a family of six. She was an honor roll student and competitive athlete throughout her entire childhood. She went on to study at Santa Clara University, graduating with a B.S. in Biology. During her time at Santa Clara, she was very involved on campus, often working two or more jobs at once, and completed a research project that resulted in a publication.</p>
+          <p style="font-size:17px; line-height:1.8; color:#4a5c3a; margin-bottom:16px;">Since graduating in 2020, she has worked in a few biotech labs in the San Francisco area. Now Joslyn René is focusing on creating her own path and building the life that feels right for her. She currently works as a desk assistant for a local gym, is a petsitter on Rover, and works for a jewelry retail store. She is the founder of EVE and the <a href="https://ownitapp.info" target="_blank" rel="noopener">OwnIt app</a>.</p>
+          <p style="font-size:17px; line-height:1.8; color:#4a5c3a;">Joslyn René lives in San Francisco with her sweet, fluffy cat ShooShoo. In her free time, she can be found enjoying life with her friends, dancing tango, or planning her next vacation.</p>
+        </div>
+      </div>
+
+      <!-- Co-Founder: Ashley -->
+      <div style="display:grid; grid-template-columns:1fr 380px; gap:52px; align-items:start;">
+        <div>
+          <div style="font-size:12px; letter-spacing:.28em; text-transform:uppercase; color:#9a7bc0; margin-bottom:8px;">Co-Founder</div>
+          <h3 style="margin:0 0 20px; font-family:'Tangerine',cursive; font-weight:700; font-size:68px; line-height:.9; color:#3d4f2e;">Ashley Liu</h3>
+          <div style="border-left:3px solid #DABAF5; padding:4px 0 4px 24px;">
+            <p style="font-style:italic; font-size:18px; line-height:1.7; color:#6a5b7d;">Ashley's bio is blooming — check back soon to learn more about the co-founder helping bring EVE to life.</p>
+          </div>
+        </div>
+        <div>
+          <image-slot id="cofounder-ashley" style="width:380px; height:470px; display:block;" shape="rounded" radius="20" placeholder="Drop Ashley's photo"></image-slot>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- welcome band -->
+  <div style="background:#EFE4FA;">
+    <div style="max-width:900px; margin:0 auto; padding:64px 40px; text-align:center;">
+      <p style="font-family:'Tangerine',cursive; font-weight:700; font-size:56px; line-height:1; color:#7d5ea6;">All women welcome — exactly as she is</p>
+      <p style="max-width:640px; margin:16px auto 0; font-style:italic; font-size:17px; line-height:1.7; color:#6a5b7d;">Regardless of age, race, religion, ethnicity, nationality, ability, or sexual orientation.</p>
+      <span onClick="{{ openJoin }}" style="display:inline-block; margin-top:30px; padding:15px 34px; background:#8EA86F; color:#fff; border-radius:999px; font-size:15px; letter-spacing:.08em; cursor:pointer;">Join the community</span>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ===================== EVENTS ===================== -->
+<sc-if value="{{ isEvents }}">
+<div>
+  <div style="background:#F7F5EC;">
+    <div style="max-width:1200px; margin:0 auto; padding:72px 40px 56px; text-align:center;">
+      <div style="font-size:13px; letter-spacing:.36em; text-transform:uppercase; color:#B8974A; margin-bottom:16px;">Calendar of Events</div>
+      <h1 style="margin:0; font-family:'Tangerine',cursive; font-weight:700; font-size:96px; line-height:.9; color:#3d4f2e;">Come gather with us</h1>
+      <p style="max-width:560px; margin:24px auto 0; font-style:italic; font-size:19px; line-height:1.65; color:#4a5c3a;">Reserve your spot at an upcoming EVE gathering. Every event is a chance to learn, restore, or connect.</p>
+    </div>
+  </div>
+
+  <div style="max-width:1000px; margin:0 auto; padding:72px 40px;">
+    <sc-for list="{{ events }}" as="item" hint-placeholder-count="1">
+      <div style="display:grid; grid-template-columns:150px 1fr auto; align-items:center; gap:36px; padding:32px 36px; background:#fff; border:1px solid #E4D3A0; border-radius:20px; margin-bottom:24px;">
+        <div style="text-align:center; background:#F3ECFA; border-radius:14px; padding:20px 12px;">
+          <div style="font-size:13px; letter-spacing:.2em; text-transform:uppercase; color:#9a7bc0;">{{ item.month }}</div>
+          <div style="font-family:'Tangerine',cursive; font-weight:700; font-size:56px; line-height:.9; color:#3d4f2e;">{{ item.day }}</div>
+          <div style="font-size:12px; color:#7d5ea6;">{{ item.year }}</div>
+        </div>
+        <div>
+          <div style="display:inline-block; padding:5px 12px; margin-bottom:12px; background:#DCF2C2; border-radius:999px; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#5a6b49;">{{ item.category }}</div>
+          <h3 style="margin:0 0 8px; font-size:28px; color:#3d4f2e;">{{ item.title }}</h3>
+          <p style="font-style:italic; font-size:16px; line-height:1.6; color:#5a6b49; max-width:440px;">{{ item.desc }}</p>
+          <div style="margin-top:12px; font-size:14px; letter-spacing:.04em; color:#8a6f2a;">{{ item.location }}</div>
+        </div>
+        <div style="text-align:center;">
+          <span onClick="{{ item.signup }}" style="display:inline-block; padding:14px 30px; background:#8EA86F; color:#fff; border-radius:999px; font-size:14px; letter-spacing:.08em; cursor:pointer; white-space:nowrap;">Sign up →</span>
+        </div>
+      </div>
+    </sc-for>
+
+    <!-- more coming -->
+    <div style="text-align:center; padding:48px 30px; border:1px dashed #cdbe94; border-radius:20px; background:#FBF9F3;">
+      <p style="font-family:'Tangerine',cursive; font-weight:700; font-size:44px; line-height:1; color:#B8974A;">More gatherings blooming soon</p>
+      <p style="max-width:520px; margin:10px auto 0; font-style:italic; font-size:16px; color:#6a6a55;">Join the community and we'll let you know the moment a new event opens for sign-ups.</p>
+      <span onClick="{{ openJoin }}" style="display:inline-block; margin-top:22px; padding:13px 30px; border:1px solid #B8974A; color:#8a6f2a; border-radius:999px; font-size:14px; letter-spacing:.08em; cursor:pointer;">Join to get notified</span>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ===================== PORTAL: LOGIN GATE ===================== -->
+<sc-if value="{{ showLoginGate }}">
+<div style="min-height:78vh; display:flex; align-items:center; justify-content:center; background:#3d4f2e; padding:80px 40px; position:relative; overflow:hidden;">
+  <img src="assets/floral/eve-leaf-sprig-v3.png" alt="" style="position:absolute; left:-40px; bottom:-50px; width:300px; height:auto; opacity:.14;">
+  <img src="assets/floral/eve-leaf-sprig-v3.png" alt="" style="position:absolute; right:-40px; top:-50px; width:300px; height:auto; opacity:.14; transform:rotate(180deg);">
+  <div style="position:relative; z-index:2; width:420px; max-width:100%; background:#FBF9F3; border-radius:22px; padding:48px 44px; text-align:center; box-shadow:0 30px 80px -30px rgba(0,0,0,.5);">
+    <div style="font-size:13px; letter-spacing:.3em; text-transform:uppercase; color:#B8974A; margin-bottom:6px;">Employee Portal</div>
+    <h2 style="margin:0 0 6px; font-family:'Tangerine',cursive; font-weight:700; font-size:60px; line-height:.95; color:#3d4f2e;">Welcome back</h2>
+    <p style="font-style:italic; font-size:15px; color:#6a6a55; margin-bottom:26px;">Enter your password to access the EVE workspace.</p>
+    <form onSubmit="{{ login }}" style="display:flex; flex-direction:column; gap:14px; text-align:left;">
+      <input class="eve-in" type="password" value="{{ pwInput }}" onInput="{{ onPwInput }}" placeholder="Password" autocomplete="current-password" style="padding:13px 16px; border:1px solid #E4D3A0; border-radius:10px; background:#fff; font-size:15px; color:#3d4f2e;">
+      <button type="submit" style="margin-top:6px; padding:15px; background:#3d4f2e; color:#E9CF82; border:none; border-radius:10px; font-size:15px; letter-spacing:.08em; cursor:pointer;">{{ loginBtnLabel }}</button>
+    </form>
+    <sc-if value="{{ loginError }}">
+      <p style="margin-top:16px; font-style:italic; font-size:14px; color:#b5544e;">{{ loginErrorMsg }}</p>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+
+<!-- ===================== PORTAL: DASHBOARD ===================== -->
+<sc-if value="{{ showDashboard }}">
+<div style="background:#F7F5EC; min-height:78vh;">
+  <!-- dashboard top bar -->
+  <div style="background:#3d4f2e; padding:22px 40px;">
+    <div style="max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;">
+      <div>
+        <div style="font-size:11px; letter-spacing:.3em; text-transform:uppercase; color:#B9C9A3;">EVE Workspace</div>
+        <div style="font-family:'Tangerine',cursive; font-weight:700; font-size:48px; line-height:.95; color:#E9CF82;">Welcome back, {{ authFirstName }}</div>
+      </div>
+      <span onClick="{{ logout }}" style="font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:#DCF2C2; border:1px solid rgba(220,242,194,.4); padding:11px 22px; border-radius:999px; cursor:pointer;">Log out →</span>
+    </div>
+  </div>
+
+  <!-- ===== DASHBOARD HOME ===== -->
+  <sc-if value="{{ dashHome }}" hint-placeholder-val="{{ true }}">
+  <div style="max-width:1200px; margin:0 auto; padding:56px 40px;">
+    <div style="font-size:13px; letter-spacing:.3em; text-transform:uppercase; color:#B8974A; margin-bottom:8px;">Your tools</div>
+    <h2 style="margin:0 0 32px; font-family:'Tangerine',cursive; font-weight:700; font-size:56px; line-height:.95; color:#3d4f2e;">One place to run EVE</h2>
+    <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:24px;">
+      <!-- To-Do (active) -->
+      <div onClick="{{ openTodo }}" style="background:#fff; border:1px solid #B8974A; border-radius:18px; padding:32px 30px; display:flex; align-items:center; gap:22px; cursor:pointer;">
+        <img src="assets/floral/eve-leaf-sprig-olive.png" alt="" style="height:74px; width:auto;">
+        <div>
+          <h3 style="margin:0 0 6px; font-size:24px; color:#8a6f2a;">To-Do Tracker</h3>
+          <p style="font-style:italic; font-size:15px; line-height:1.6; color:#5a6b49; margin:0;">Shared task list for the team.</p>
+          <div style="margin-top:8px; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#8EA86F;">{{ todoOpenCount }} open · {{ todoDoneCount }} done · Open →</div>
+        </div>
+      </div>
+      <!-- EVE Studio -->
+      <div onClick="{{ openStudio }}" style="background:#fff; border:1px solid #B8974A; border-radius:18px; padding:32px 30px; display:flex; align-items:center; gap:22px; cursor:pointer;">
+        <img src="assets/floral/eve-bloom-loose-v3.png" alt="" style="height:74px; width:auto;">
+        <div>
+          <h3 style="margin:0 0 6px; font-size:24px; color:#8a6f2a;">EVE Studio</h3>
+          <p style="font-style:italic; font-size:15px; line-height:1.6; color:#5a6b49; margin:0;">Create marketing materials — posts, quotes, fliers.</p>
+          <div style="margin-top:8px; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#8EA86F;">6 templates · Open →</div>
+        </div>
+      </div>
+      <!-- Income -->
+      <div onClick="{{ openIncome }}" style="background:#fff; border:1px solid #B8974A; border-radius:18px; padding:32px 30px; display:flex; align-items:center; gap:22px; cursor:pointer;">
+        <img src="assets/floral/eve-bloom-stem-olive.png" alt="" style="height:74px; width:auto;">
+        <div>
+          <h3 style="margin:0 0 6px; font-size:24px; color:#8a6f2a;">Income Tracker</h3>
+          <p style="font-style:italic; font-size:15px; line-height:1.6; color:#5a6b49; margin:0;">Log and review revenue.</p>
+          <div style="margin-top:8px; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#8EA86F;">{{ incomeTotalLabel }} · Open →</div>
+        </div>
+      </div>
+      <!-- Expense -->
+      <div onClick="{{ openExpense }}" style="background:#fff; border:1px solid #B8974A; border-radius:18px; padding:32px 30px; display:flex; align-items:center; gap:22px; cursor:pointer;">
+        <img src="assets/floral/eve-bloom-purple.png" alt="" style="height:74px; width:auto;">
+        <div>
+          <h3 style="margin:0 0 6px; font-size:24px; color:#8a6f2a;">Expense Tracker</h3>
+          <p style="font-style:italic; font-size:15px; line-height:1.6; color:#5a6b49; margin:0;">Record business expenses.</p>
+          <div style="margin-top:8px; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#8EA86F;">{{ expenseTotalLabel }} · Open →</div>
+        </div>
+      </div>
+      <!-- Reports / Export -->
+      <div onClick="{{ openExport }}" style="grid-column:1 / -1; background:#F7F5EC; border:1px solid #E4D3A0; border-radius:18px; padding:26px 30px; display:flex; align-items:center; justify-content:space-between; gap:22px; cursor:pointer;">
+        <div style="display:flex; align-items:center; gap:22px;">
+          <div style="width:56px; height:56px; border-radius:14px; background:#fff; border:1px solid #E4D3A0; display:flex; align-items:center; justify-content:center; font-size:24px;">📊</div>
+          <div>
+            <h3 style="margin:0 0 4px; font-size:22px; color:#8a6f2a;">Reports &amp; Export</h3>
+            <p style="font-style:italic; font-size:14px; line-height:1.5; color:#5a6b49; margin:0;">Net profit, CSV, Schedule&nbsp;C, and PDF — by year or date range.</p>
+          </div>
+        </div>
+        <div style="text-align:right; font-size:13px; letter-spacing:.04em; color:#8a6f2a; white-space:nowrap;">Net {{ netProfitLabel }} · Open →</div>
+      </div>
+      <!-- Login Activity tile — Joslyn only -->
+      <sc-if value="{{ isOwner }}">
+      <div onClick="{{ openLoginLog }}" style="grid-column:1 / -1; background:#F3ECFA; border:1px solid #DABAF5; border-radius:18px; padding:26px 30px; display:flex; align-items:center; justify-content:space-between; gap:22px; cursor:pointer;">
+        <div style="display:flex; align-items:center; gap:22px;">
+          <div style="width:56px; height:56px; border-radius:14px; background:#fff; display:flex; align-items:center; justify-content:center; font-size:24px;">🔐</div>
+          <div>
+            <h3 style="margin:0 0 4px; font-size:22px; color:#7d5ea6;">Login Activity</h3>
+            <p style="font-style:italic; font-size:14px; line-height:1.5; color:#6a5b7d; margin:0;">Last sign-in: {{ lastLoginSummary }}</p>
+          </div>
+        </div>
+        <div style="text-align:right; font-size:13px; letter-spacing:.04em; color:#7d5ea6; white-space:nowrap;">{{ loginCount }} recorded · View →</div>
+      </div>
+      </sc-if>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ===== DASHBOARD: TO-DO TOOL ===== -->
+  <sc-if value="{{ dashTodo }}">
+  <div style="max-width:1120px; margin:0 auto; padding:44px 40px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:8px; flex-wrap:wrap;">
+      <span onClick="{{ backToDash }}" style="font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:#8a6f2a; cursor:pointer;">← Dashboard</span>
+      <span style="font-size:12px; letter-spacing:.04em; color:#9a9a86; font-style:italic;">{{ saveStatus }}</span>
+    </div>
+    <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:20px; margin-bottom:6px; flex-wrap:wrap;">
+      <div>
+        <div style="font-size:13px; letter-spacing:.3em; text-transform:uppercase; color:#B8974A; margin-bottom:4px;">To-Do Tracker</div>
+        <h2 style="margin:0; font-family:'Tangerine',cursive; font-weight:700; font-size:60px; line-height:.9; color:#3d4f2e;">What EVE needs next</h2>
+      </div>
+      <span onClick="{{ addTask }}" style="padding:13px 26px; background:#8EA86F; color:#fff; border-radius:999px; font-size:14px; letter-spacing:.06em; cursor:pointer; white-space:nowrap;">+ Add task</span>
+    </div>
+    <p style="font-style:italic; font-size:15px; color:#6a6a55; margin:0 0 24px;">René &amp; Ashley · update as we go · deadlines are suggestions — change anything.</p>
+
+    <!-- column headers -->
+    <div style="display:grid; grid-template-columns:34px 1.5fr 108px 118px 1.4fr 130px 108px 34px; gap:12px; padding:0 18px 10px; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#B8974A;">
+      <span></span><span>Task</span><span>Priority</span><span>Progress</span><span>Notes</span><span>Deadline</span><span>Assignment</span><span></span>
+    </div>
+
+    <sc-for list="{{ tasks }}" as="t" hint-placeholder-count="4">
+      <div style="display:grid; grid-template-columns:34px 1.5fr 108px 118px 1.4fr 130px 108px 34px; gap:12px; align-items:start; background:#fff; border:1px solid #E4D3A0; border-left:4px solid {{ t.accent }}; border-radius:14px; padding:14px 18px; margin-bottom:12px;">
+        <div style="padding-top:9px; font-size:18px; text-align:center;">{{ t.icon }}</div>
+        <textarea class="eve-in eve-todo-cell" rows="2" data-id="{{ t.id }}" data-field="task" onInput="{{ editField }}" value="{{ t.task }}" style="border:1px solid transparent; border-radius:8px; background:#FBF9F3; font-size:14px; line-height:1.5; color:#3d4f2e; padding:8px 10px; resize:vertical; min-height:44px;"></textarea>
+        <select class="eve-in" data-id="{{ t.id }}" data-field="priority" onChange="{{ editField }}" value="{{ t.priority }}" style="border:1px solid #E4D3A0; border-radius:8px; background:#fff; font-size:13px; color:#3d4f2e; padding:8px 6px;">
+          <option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option>
+        </select>
+        <select class="eve-in" data-id="{{ t.id }}" data-field="progress" onChange="{{ editField }}" value="{{ t.progress }}" style="border:1px solid #E4D3A0; border-radius:8px; background:{{ t.progressBg }}; font-size:13px; color:{{ t.progressColor }}; padding:8px 6px;">
+          <option value="Not started">Not started</option><option value="Started">Started</option><option value="Complete">Complete</option>
+        </select>
+        <textarea class="eve-in eve-todo-cell" rows="2" data-id="{{ t.id }}" data-field="notes" onInput="{{ editField }}" value="{{ t.notes }}" style="border:1px solid transparent; border-radius:8px; background:#FBF9F3; font-size:13px; line-height:1.5; color:#5a6b49; padding:8px 10px; resize:vertical; min-height:44px;"></textarea>
+        <input class="eve-in" type="text" data-id="{{ t.id }}" data-field="deadline" onInput="{{ editField }}" value="{{ t.deadline }}" style="border:1px solid #E4D3A0; border-radius:8px; background:#fff; font-size:13px; color:#3d4f2e; padding:8px 10px;">
+        <select class="eve-in" data-id="{{ t.id }}" data-field="assignment" onChange="{{ editField }}" value="{{ t.assignment }}" style="border:1px solid #E4D3A0; border-radius:8px; background:#fff; font-size:13px; color:#3d4f2e; padding:8px 6px;">
+          <option value="René">René</option><option value="Ashley">Ashley</option><option value="Both">Both</option>
+        </select>
+        <div onClick="{{ t.remove }}" style="padding-top:8px; font-size:18px; text-align:center; color:#c88; cursor:pointer;" title="Delete task">×</div>
+      </div>
+    </sc-for>
+
+    <sc-if value="{{ noTasks }}">
+      <div style="padding:40px; text-align:center; border:1px dashed #cdbe94; border-radius:16px; background:#FBF9F3; font-style:italic; color:#9a9a86;">No tasks yet — add your first one above.</div>
+    </sc-if>
+  </div>
+  </sc-if>
+  <!-- ===== DASHBOARD: EVE STUDIO ===== -->
+  <sc-if value="{{ dashStudio }}">
+  <div style="max-width:1280px; margin:0 auto; padding:28px 40px 44px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:16px; flex-wrap:wrap;">
+      <span onClick="{{ backToDash }}" style="font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:#8a6f2a; cursor:pointer;">← Dashboard</span>
+      <span onClick="{{ openStudioTab }}" style="font-size:12px; letter-spacing:.06em; color:#8a6f2a; cursor:pointer;">Open full screen ↗</span>
+    </div>
+    <div style="border:1px solid #E4D3A0; border-radius:18px; overflow:hidden; box-shadow:0 20px 60px -30px rgba(61,79,46,.4);">
+      <iframe src="eve-studio.html" title="EVE Studio" style="width:100%; height:1500px; border:none; display:block;"></iframe>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ===== SHARED: period filter bar (income/expense/export) ===== -->
+
+  <!-- ===== DASHBOARD: INCOME TRACKER ===== -->
+  <sc-if value="{{ dashIncome }}">
+  <div style="max-width:1120px; margin:0 auto; padding:44px 40px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:8px; flex-wrap:wrap;">
+      <span onClick="{{ backToDash }}" style="font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:#8a6f2a; cursor:pointer;">← Dashboard</span>
+      <span style="font-size:12px; letter-spacing:.04em; color:#9a9a86; font-style:italic;">{{ saveStatus }}</span>
+    </div>
+    <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:20px; margin-bottom:6px; flex-wrap:wrap;">
+      <div>
+        <div style="font-size:13px; letter-spacing:.3em; text-transform:uppercase; color:#B8974A; margin-bottom:4px;">Income Tracker</div>
+        <h2 style="margin:0; font-family:'Tangerine',cursive; font-weight:700; font-size:60px; line-height:.9; color:#3d4f2e;">Money coming in</h2>
+      </div>
+      <span onClick="{{ addIncome }}" style="padding:13px 26px; background:#8EA86F; color:#fff; border-radius:999px; font-size:14px; letter-spacing:.06em; cursor:pointer; white-space:nowrap;">+ Add income</span>
+    </div>
+
+    <!-- period filter -->
+    <div style="display:flex; align-items:center; gap:10px; margin:16px 0 20px; flex-wrap:wrap;">
+      <span style="font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#B8974A;">Show:</span>
+      <select class="eve-in" value="{{ periodMode }}" onChange="{{ setPeriodMode }}" style="border:1px solid #E4D3A0; border-radius:8px; background:#fff; font-size:13px; color:#3d4f2e; padding:8px 10px;">
+        <option value="all">All time</option><option value="year">By year</option>
+      </select>
+      <sc-if value="{{ periodIsYear }}">
+        <select class="eve-in" value="{{ periodYear }}" onChange="{{ setPeriodYear }}" style="border:1px solid #E4D3A0; border-radius:8px; background:#fff; font-size:13px; color:#3d4f2e; padding:8px 10px;">
+          <sc-for list="{{ yearOptions }}" as="y" hint-placeholder-count="2"><option value="{{ y }}">{{ y }}</option></sc-for>
+        </select>
+      </sc-if>
+      <span style="margin-left:auto; font-size:14px; color:#5a6b49;">Total in view: <strong style="color:#6a4fa0;">{{ incomeFilteredTotal }}</strong></span>
+    </div>
+
+    <!-- summary by type -->
+    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:22px;">
+      <sc-for list="{{ incomeByType }}" as="row" hint-placeholder-count="3">
+        <div style="background:#F3ECFA; border:1px solid #E9DCF6; border-radius:12px; padding:10px 16px;">
+          <div style="font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#9a7bc0;">{{ row.type }}</div>
+          <div style="font-size:20px; font-weight:600; color:#3d4f2e;">{{ row.total }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- column headers -->
+    <div style="display:grid; grid-template-columns:150px 1.4fr 128px 130px 1.3fr 34px; gap:12px; padding:0 18px 10px; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#B8974A;">
+      <span>Type</span><span>Source / Event</span><span>Amount</span><span>Date</span><span>Notes</span><span></span>
+    </div>
+    <sc-for list="{{ incomeRows }}" as="r" hint-placeholder-count="3">
+      <div style="display:grid; grid-template-columns:150px 1.4fr 128px 130px 1.3fr 34px; gap:12px; align-items:start; background:#fff; border:1px solid #E4D3A0; border-left:4px solid #6a4fa0; border-radius:14px; padding:14px 18px; margin-bottom:12px;">
+        <select class="eve-in" data-id="{{ r.id }}" data-field="type" onChange="{{ editIncome }}" value="{{ r.type }}" style="border:1px solid #E4D3A0; border-radius:8px; background:#fff; font-size:13px; color:#3d4f2e; padding:8px 6px;">
+          <sc-for list="{{ incomeTypes }}" as="it" hint-placeholder-count="4"><option value="{{ it }}">{{ it }}</option></sc-for>
+        </select>
+        <input class="eve-in" type="text" data-id="{{ r.id }}" data-field="source" onInput="{{ editIncome }}" value="{{ r.source }}" placeholder="Source / event name" style="border:1px solid #E4D3A0; border-radius:8px; background:#FBF9F3; font-size:14px; color:#3d4f2e; padding:9px 10px;">
+        <input class="eve-in" type="number" inputmode="decimal" data-id="{{ r.id }}" data-field="amount" onInput="{{ editIncome }}" value="{{ r.amount }}" placeholder="0.00" style="border:1px solid #E4D3A0; border-radius:8px; background:#fff; font-size:14px; color:#3d4f2e; padding:9px 10px;">
+        <input class="eve-in" type="date" data-id="{{ r.id }}" data-field="date" onInput="{{ editIncome }}" value="{{ r.date }}" style="border:1px solid #E4D3A0; border-radius:8px; background:#fff; font-size:13px; color:#3d4f2e; padding:8px 10px;">
+        <input class="eve-in" type="text" data-id="{{ r.id }}" data-field="note" onInput="{{ editIncome }}" value="{{ r.note }}" placeholder="Notes" style="border:1px solid #E4D3A0; border-radius:8px; background:#FBF9F3; font-size:13px; color:#5a6b49; padding:9px 10px;">
+        <div onClick="{{ r.remove }}" style="padding-top:8px; font-size:18px; text-align:center; color:#c88; cursor:pointer;" title="Delete">×</div>
+      </div>
+    </sc-for>
+    <sc-if value="{{ noIncome }}">
+      <div style="padding:40px; text-align:center; border:1px dashed #cdbe94; border-radius:16px; background:#FBF9F3; font-style:italic; color:#9a9a86;">No income logged in this view — add your first entry above.</div>
+    </sc-if>
+  </div>
+  </sc-if>
+
+  <!-- ===== DASHBOARD: EXPENSE TRACKER ===== -->
+  <sc-if value="{{ dashExpense }}">
+  <div style="max-width:1180px; margin:0 auto; padding:44px 40px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:8px; flex-wrap:wrap;">
+      <span onClick="{{ backToDash }}" style="font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:#8a6f2a; cursor:pointer;">← Dashboard</span>
+      <span style="font-size:12px; letter-spacing:.04em; color:#9a9a86; font-style:italic;">{{ saveStatus }}</span>
+    </div>
+    <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:20px; margin-bottom:6px; flex-wrap:wrap;">
+      <div>
+        <div style="font-size:13px; letter-spacing:.3em; text-transform:uppercase; color:#B8974A; margin-bottom:4px;">Expense Tracker</div>
+        <h2 style="margin:0; font-family:'Tangerine',cursive; font-weight:700; font-size:60px; line-height:.9; color:#3d4f2e;">Money going out</h2>
+      </div>
+      <span onClick="{{ addExpense }}" style="padding:13px 26px; background:#8EA86F; color:#fff; border-radius:999px; font-size:14px; letter-spacing:.06em; cursor:pointer; white-space:nowrap;">+ Add expense</span>
+    </div>
+
+    <!-- period filter -->
+    <div style="display:flex; align-items:center; gap:10px; margin:16px 0 20px; flex-wrap:wrap;">
+      <span style="font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#B8974A;">Show:</span>
+      <select class="eve-in" value="{{ periodMode }}" onChange="{{ setPeriodMode }}" style="border:1px solid #E4D3A0; border-radius:8px; background:#fff; font-size:13px; color:#3d4f2e; padding:8px 10px;">
+        <option value="all">All time</option><option value="year">By year</option>
+      </select>
+      <sc-if value="{{ periodIsYear }}">
+        <select class="eve-in" value="{{ periodYear }}" onChange="{{ setPeriodYear }}" style="border:1px solid #E4D3A0; border-radius:8px; background:#fff; font-size:13px; color:#3d4f2e; padding:8px 10px;">
+          <sc-for list="{{ yearOptions }}" as="y" hint-placeholder-count="2"><option value="{{ y }}">{{ y }}</option></sc-for>
+        </select>
+      </sc-if>
+      <span style="margin-left:auto; font-size:14px; color:#5a6b49;">Total in view: <strong style="color:#b03a2e;">{{ expenseFilteredTotal }}</strong></span>
+    </div>
+
+    <!-- column headers -->
+    <div style="display:grid; grid-template-columns:130px 1.2fr 120px 150px 150px 1.1fr 34px; gap:12px; padding:0 18px 10px; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#B8974A;">
+      <span>Date</span><span>Vendor</span><span>Amount</span><span>Category</span><span>Payment</span><span>Note</span><span></span>
+    </div>
+    <sc-for list="{{ expenseRows }}" as="e" hint-placeholder-count="3">
+      <div style="display:grid; grid-template-columns:130px 1.2fr 120px 150px 150px 1.1fr 34px; gap:12px; align-items:start; background:#fff; border:1px solid #E4D3A0; border-left:4px solid #b03a2e; border-radius:14px; padding:14px 18px; margin-bottom:12px;">
+        <input class="eve-in" type="date" data-id="{{ e.id }}" data-field="date" onInput="{{ editExpense }}" value="{{ e.date }}" style="border:1px solid #E4D3A0; border-radius:8px; background:#fff; font-size:13px; color:#3d4f2e; padding:8px 10px;">
+        <input class="eve-in" type="text" data-id="{{ e.id }}" data-field="vendor" onInput="{{ editExpense }}" value="{{ e.vendor }}" placeholder="Vendor" style="border:1px solid #E4D3A0; border-radius:8px; background:#FBF9F3; font-size:14px; color:#3d4f2e; padding:9px 10px;">
+        <input class="eve-in" type="number" inputmode="decimal" data-id="{{ e.id }}" data-field="amount" onInput="{{ editExpense }}" value="{{ e.amount }}" placeholder="0.00" style="border:1px solid #E4D3A0; border-radius:8px; background:#fff; font-size:14px; color:#3d4f2e; padding:9px 10px;">
+        <select class="eve-in" data-id="{{ e.id }}" data-field="category" onChange="{{ editExpense }}" value="{{ e.category }}" style="border:1px solid #E4D3A0; border-radius:8px; background:#fff; font-size:13px; color:#3d4f2e; padding:8px 6px;">
+          <sc-for list="{{ expenseCats }}" as="c" hint-placeholder-count="4"><option value="{{ c }}">{{ c }}</option></sc-for>
+        </select>
+        <select class="eve-in" data-id="{{ e.id }}" data-field="payMethod" onChange="{{ editExpense }}" value="{{ e.payMethod }}" style="border:1px solid #E4D3A0; border-radius:8px; background:#fff; font-size:13px; color:#3d4f2e; padding:8px 6px;">
+          <sc-for list="{{ payMethods }}" as="pm" hint-placeholder-count="4"><option value="{{ pm }}">{{ pm }}</option></sc-for>
+        </select>
+        <input class="eve-in" type="text" data-id="{{ e.id }}" data-field="note" onInput="{{ editExpense }}" value="{{ e.note }}" placeholder="Note" style="border:1px solid #E4D3A0; border-radius:8px; background:#FBF9F3; font-size:13px; color:#5a6b49; padding:9px 10px;">
+        <div onClick="{{ e.remove }}" style="padding-top:8px; font-size:18px; text-align:center; color:#c88; cursor:pointer;" title="Delete">×</div>
+      </div>
+    </sc-for>
+    <sc-if value="{{ noExpenses }}">
+      <div style="padding:40px; text-align:center; border:1px dashed #cdbe94; border-radius:16px; background:#FBF9F3; font-style:italic; color:#9a9a86;">No expenses in this view — add your first one above.</div>
+    </sc-if>
+  </div>
+  </sc-if>
+
+  <!-- ===== DASHBOARD: REPORTS & EXPORT ===== -->
+  <sc-if value="{{ dashExport }}">
+  <div style="max-width:1000px; margin:0 auto; padding:44px 40px;">
+    <div style="margin-bottom:8px;">
+      <span onClick="{{ backToDash }}" style="font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:#8a6f2a; cursor:pointer;">← Dashboard</span>
+    </div>
+    <div style="font-size:13px; letter-spacing:.3em; text-transform:uppercase; color:#B8974A; margin-bottom:4px;">Reports &amp; Export</div>
+    <h2 style="margin:0 0 20px; font-family:'Tangerine',cursive; font-weight:700; font-size:60px; line-height:.9; color:#3d4f2e;">The whole picture</h2>
+
+    <!-- period filter -->
+    <div style="display:flex; align-items:center; gap:10px; margin:0 0 22px; flex-wrap:wrap;">
+      <span style="font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#B8974A;">Period:</span>
+      <select class="eve-in" value="{{ periodMode }}" onChange="{{ setPeriodMode }}" style="border:1px solid #E4D3A0; border-radius:8px; background:#fff; font-size:13px; color:#3d4f2e; padding:8px 10px;">
+        <option value="all">All time</option><option value="year">By year</option><option value="range">Date range</option>
+      </select>
+      <sc-if value="{{ periodIsYear }}">
+        <select class="eve-in" value="{{ periodYear }}" onChange="{{ setPeriodYear }}" style="border:1px solid #E4D3A0; border-radius:8px; background:#fff; font-size:13px; color:#3d4f2e; padding:8px 10px;">
+          <sc-for list="{{ yearOptions }}" as="y" hint-placeholder-count="2"><option value="{{ y }}">{{ y }}</option></sc-for>
+        </select>
+      </sc-if>
+      <sc-if value="{{ periodIsRange }}">
+        <span style="display:inline-flex; align-items:center; gap:8px;">
+          <input class="eve-in" type="date" value="{{ rangeStart }}" onInput="{{ setRangeStart }}" style="border:1px solid #E4D3A0; border-radius:8px; background:#fff; font-size:13px; color:#3d4f2e; padding:8px 10px;">
+          <span style="color:#9a9a86;">to</span>
+          <input class="eve-in" type="date" value="{{ rangeEnd }}" onInput="{{ setRangeEnd }}" style="border:1px solid #E4D3A0; border-radius:8px; background:#fff; font-size:13px; color:#3d4f2e; padding:8px 10px;">
+        </span>
+      </sc-if>
+    </div>
+
+    <!-- summary numbers -->
+    <div style="border:1px solid #E4D3A0; border-radius:18px; overflow:hidden; margin-bottom:26px;">
+      <div style="background:#6a4fa0; padding:18px 24px;">
+        <div style="font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.7);">Total income · {{ periodLabel }}</div>
+        <div style="font-size:38px; font-weight:700; color:#fff; font-family:'Radley',serif;">{{ incomeFilteredTotal }}</div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr;">
+        <div style="padding:18px 24px; border-right:1px solid #EFE9DA;">
+          <div style="font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:#B8974A;">Total expenses</div>
+          <div style="font-size:26px; font-weight:600; color:#b03a2e; font-family:'Radley',serif;">{{ expenseFilteredTotal }}</div>
+        </div>
+        <div style="padding:18px 24px;">
+          <div style="font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:#B8974A;">Net profit</div>
+          <div style="font-size:26px; font-weight:600; color:#1db954; font-family:'Radley',serif;">{{ netProfitFiltered }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CSV export -->
+    <div style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:#B8974A; margin-bottom:10px;">Download for Google Sheets</div>
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
+      <span onClick="{{ exportIncomeCSV }}" style="padding:13px 24px; background:#fff; border:1px solid #B8974A; color:#8a6f2a; border-radius:999px; font-size:14px; cursor:pointer;">↓ Income CSV</span>
+      <span onClick="{{ exportExpenseCSV }}" style="padding:13px 24px; background:#fff; border:1px solid #B8974A; color:#8a6f2a; border-radius:999px; font-size:14px; cursor:pointer;">↓ Expenses CSV</span>
+      <span onClick="{{ exportBLTCSV }}" style="padding:13px 24px; background:#3d4f2e; color:#E9CF82; border-radius:999px; font-size:14px; cursor:pointer;">↓ Expenses (BLT format)</span>
+    </div>
+    <p style="font-style:italic; font-size:13px; color:#6a6a55; margin:0 0 26px;">"BLT format" matches your personal Boss Lady Tings columns — upload it there so EVE stays in sync for your combined taxes.</p>
+
+    <!-- Schedule C -->
+    <div style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:#B8974A; margin-bottom:10px;">Schedule C tax summary</div>
+    <div style="border:1px solid #E4D3A0; border-radius:16px; overflow:hidden; margin-bottom:26px;">
+      <sc-for list="{{ schedC }}" as="line" hint-placeholder-count="3">
+        <div style="display:grid; grid-template-columns:1fr auto; gap:12px; padding:12px 20px; border-bottom:1px solid #F3EFE3; font-size:14px; color:#3d4f2e;">
+          <span>{{ line.label }}</span><span style="font-weight:600;">{{ line.amount }}</span>
+        </div>
+      </sc-for>
+      <div style="display:grid; grid-template-columns:1fr auto; gap:12px; padding:14px 20px; background:#F7F5EC; font-size:15px; color:#3d4f2e;">
+        <span style="font-weight:600;">Total deductible expenses</span><span style="font-weight:700; color:#b03a2e;">{{ schedCTotal }}</span>
+      </div>
+    </div>
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
+      <span onClick="{{ exportSchedCCSV }}" style="padding:13px 24px; background:#fff; border:1px solid #B8974A; color:#8a6f2a; border-radius:999px; font-size:14px; cursor:pointer;">↓ Schedule C CSV</span>
+      <span onClick="{{ exportPDF }}" style="padding:13px 24px; background:#8EA86F; color:#fff; border-radius:999px; font-size:14px; cursor:pointer;">↓ PDF report</span>
+    </div>
+    <p style="font-style:italic; font-size:13px; color:#6a6a55; margin:6px 0 30px;">Some categories are partially deductible (Business Meals 50%, Phone 15%, Internet 20%, iPad 25%) — the summary applies those automatically. Estimate only; confirm with a tax professional. Once EVE is a registered LLC, we'll revisit the tax form.</p>
+
+    <!-- migration / import -->
+    <sc-if value="{{ isOwner }}">
+    <div style="border:1px dashed #cdbe94; border-radius:16px; background:#FBF9F3; padding:22px 24px;">
+      <div style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:#9a7bc0; margin-bottom:6px;">One-time migration · owner</div>
+      <h3 style="margin:0 0 8px; font-size:20px; color:#3d4f2e;">Import existing EVE data from Boss Lady Tings</h3>
+      <p style="font-style:italic; font-size:14px; line-height:1.6; color:#5a6b49; margin:0 0 14px;">In BLT, export the EVE business as CSV, then upload the file here. Expense rows and any income/ticket rows are detected and added. Safe to run once.</p>
+      <label style="display:inline-block; padding:12px 22px; background:#3d4f2e; color:#E9CF82; border-radius:999px; font-size:14px; cursor:pointer;">
+        Choose BLT CSV… <input type="file" accept=".csv" onChange="{{ importBLT }}" style="display:none;">
+      </label>
+      <sc-if value="{{ importMsg }}"><span style="margin-left:14px; font-size:14px; font-style:italic; color:#8a6f2a;">{{ importMsg }}</span></sc-if>
+    </div>
+    </sc-if>
+  </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<!-- ===================== LOGIN LOG MODAL ===================== -->
+<sc-if value="{{ showLoginLog }}">
+<div onClick="{{ closeModal }}" style="position:fixed; inset:0; z-index:100; background:rgba(61,79,46,.5); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; padding:32px;">
+  <div onClick="{{ stop }}" style="width:560px; max-width:100%; max-height:86vh; overflow:auto; background:#FBF9F3; border-radius:22px; position:relative; box-shadow:0 40px 100px -30px rgba(0,0,0,.5);">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; padding:26px 30px; background:#F3ECFA; position:sticky; top:0;">
+      <div>
+        <div style="font-size:12px; letter-spacing:.24em; text-transform:uppercase; color:#9a7bc0;">Security · Owner only</div>
+        <h3 style="margin:2px 0 0; font-family:'Tangerine',cursive; font-weight:700; font-size:44px; line-height:.9; color:#3d4f2e;">Login activity</h3>
+      </div>
+      <span onClick="{{ closeModal }}" style="font-size:26px; color:#9a9a86; cursor:pointer; line-height:1;">×</span>
+    </div>
+    <sc-if value="{{ hasLogins }}">
+    <div style="display:flex; justify-content:flex-end; padding:12px 30px 0;">
+      <span onClick="{{ clearLog }}" style="font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#b5544e; border:1px solid #e3b7b2; padding:8px 16px; border-radius:999px; cursor:pointer;">Clear history</span>
+    </div>
+    </sc-if>
+    <div style="padding:6px 0 14px;">
+      <div style="display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:12px; padding:12px 30px; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#B8974A; border-bottom:1px solid #EFE9DA;">
+        <span>Employee</span><span>Date</span><span>Time</span>
+      </div>
+      <sc-for list="{{ loginLog }}" as="entry" hint-placeholder-count="2">
+        <div style="display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:12px; padding:13px 30px; font-size:15px; color:#3d4f2e; border-bottom:1px solid #F3EFE3; align-items:center;">
+          <span style="display:flex; align-items:center; gap:10px;"><span style="width:9px; height:9px; border-radius:999px; background:{{ entry.dot }};"></span>{{ entry.name }}</span>
+          <span>{{ entry.date }}</span>
+          <span>{{ entry.time }}</span>
+        </div>
+      </sc-for>
+      <sc-if value="{{ noLogins }}">
+        <div style="padding:24px 30px; font-style:italic; font-size:14px; color:#9a9a86;">No sign-ins recorded yet.</div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ===================== FOOTER ===================== -->
+<div style="background:#3d4f2e; padding:44px 40px;">
+  <div style="max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap;">
+    <span onClick="{{ goHome }}" style="font-family:'Tangerine',cursive; font-weight:700; font-size:56px; color:#E9CF82; cursor:pointer;">EVE</span>
+    <span style="font-size:13px; letter-spacing:.22em; text-transform:uppercase; color:#DCF2C2;">Empower · Value · Elevate · @welcometoeve</span>
+    <span onClick="{{ goPortal }}" style="font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:#7f9268; border:1px solid rgba(85,104,65,.5); padding:9px 16px; border-radius:999px; cursor:pointer;">Employee Portal →</span>
+  </div>
+</div>
+
+<!-- ===================== JOIN MODAL ===================== -->
+<sc-if value="{{ showJoin }}">
+<div onClick="{{ closeModal }}" style="position:fixed; inset:0; z-index:100; background:rgba(61,79,46,.5); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; padding:32px;">
+  <div onClick="{{ stop }}" style="width:520px; max-width:100%; max-height:90vh; overflow:auto; background:#FBF9F3; border-radius:22px; padding:44px; position:relative; box-shadow:0 40px 100px -30px rgba(0,0,0,.5);">
+    <span onClick="{{ closeModal }}" style="position:absolute; top:20px; right:24px; font-size:26px; color:#9a9a86; cursor:pointer; line-height:1;">×</span>
+    <sc-if value="{{ notSubmitted }}" hint-placeholder-val="{{ true }}">
+    <div>
+      <div style="font-size:13px; letter-spacing:.3em; text-transform:uppercase; color:#B8974A; margin-bottom:6px;">Join EVE</div>
+      <h2 style="margin:0 0 6px; font-family:'Tangerine',cursive; font-weight:700; font-size:60px; line-height:.95; color:#3d4f2e;">Become part of the bloom</h2>
+      <p style="font-style:italic; font-size:15px; line-height:1.6; color:#6a6a55; margin-bottom:26px;">Tell us a little about you and we'll welcome you in.</p>
+      <form onSubmit="{{ submit }}" style="display:flex; flex-direction:column; gap:14px;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+          <input class="eve-in" type="text" placeholder="First name" required style="padding:13px 16px; border:1px solid #E4D3A0; border-radius:10px; background:#fff; font-size:15px; color:#3d4f2e;">
+          <input class="eve-in" type="text" placeholder="Last name" required style="padding:13px 16px; border:1px solid #E4D3A0; border-radius:10px; background:#fff; font-size:15px; color:#3d4f2e;">
+        </div>
+        <input class="eve-in" type="email" placeholder="Email address" required style="padding:13px 16px; border:1px solid #E4D3A0; border-radius:10px; background:#fff; font-size:15px; color:#3d4f2e;">
+        <input class="eve-in" type="tel" placeholder="Phone (optional)" style="padding:13px 16px; border:1px solid #E4D3A0; border-radius:10px; background:#fff; font-size:15px; color:#3d4f2e;">
+        <select class="eve-in" style="padding:13px 16px; border:1px solid #E4D3A0; border-radius:10px; background:#fff; font-size:15px; color:#3d4f2e;">
+          <option>What draws you to EVE? (optional)</option>
+          <option>Learn &amp; Grow</option>
+          <option>Luxury &amp; Pampering</option>
+          <option>Career &amp; Networking</option>
+          <option>All of it!</option>
+        </select>
+        <button type="submit" style="margin-top:6px; padding:15px; background:#8EA86F; color:#fff; border:none; border-radius:999px; font-size:15px; letter-spacing:.08em; cursor:pointer;">Request to join</button>
+      </form>
+    </div>
+    </sc-if>
+    <sc-if value="{{ submitted }}">
+    <div style="text-align:center; padding:20px 0;">
+      <img src="assets/floral/eve-bloom-loose-v3.png" alt="" style="height:120px; width:auto; margin-bottom:10px;">
+      <h2 style="margin:0 0 10px; font-family:'Tangerine',cursive; font-weight:700; font-size:60px; line-height:.95; color:#3d4f2e;">Welcome to EVE</h2>
+      <p style="font-style:italic; font-size:17px; line-height:1.6; color:#5a6b49; max-width:360px; margin:0 auto;">Thank you for joining. We'll be in touch soon with your welcome and upcoming gatherings.</p>
+      <span onClick="{{ closeModal }}" style="display:inline-block; margin-top:24px; padding:13px 30px; background:#3d4f2e; color:#E9CF82; border-radius:999px; font-size:14px; letter-spacing:.08em; cursor:pointer;">Lovely, close</span>
+    </div>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+
+<!-- ===================== EVENT SIGN-UP MODAL ===================== -->
+<sc-if value="{{ showEventSignup }}">
+<div onClick="{{ closeModal }}" style="position:fixed; inset:0; z-index:100; background:rgba(61,79,46,.5); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; padding:32px;">
+  <div onClick="{{ stop }}" style="width:520px; max-width:100%; max-height:90vh; overflow:auto; background:#FBF9F3; border-radius:22px; padding:44px; position:relative; box-shadow:0 40px 100px -30px rgba(0,0,0,.5);">
+    <span onClick="{{ closeModal }}" style="position:absolute; top:20px; right:24px; font-size:26px; color:#9a9a86; cursor:pointer; line-height:1;">×</span>
+    <sc-if value="{{ notSubmitted }}" hint-placeholder-val="{{ true }}">
+    <div>
+      <div style="font-size:13px; letter-spacing:.3em; text-transform:uppercase; color:#B8974A; margin-bottom:6px;">Event Sign-up</div>
+      <h2 style="margin:0 0 4px; font-family:'Tangerine',cursive; font-weight:700; font-size:52px; line-height:.98; color:#3d4f2e;">{{ selectedTitle }}</h2>
+      <p style="font-size:14px; letter-spacing:.04em; color:#8a6f2a; margin-bottom:24px;">{{ selectedWhen }}</p>
+      <form onSubmit="{{ submit }}" style="display:flex; flex-direction:column; gap:14px;">
+        <input class="eve-in" type="text" placeholder="Full name" required style="padding:13px 16px; border:1px solid #E4D3A0; border-radius:10px; background:#fff; font-size:15px; color:#3d4f2e;">
+        <input class="eve-in" type="email" placeholder="Email address" required style="padding:13px 16px; border:1px solid #E4D3A0; border-radius:10px; background:#fff; font-size:15px; color:#3d4f2e;">
+        <input class="eve-in" type="tel" placeholder="Phone (optional)" style="padding:13px 16px; border:1px solid #E4D3A0; border-radius:10px; background:#fff; font-size:15px; color:#3d4f2e;">
+        <div style="display:grid; grid-template-columns:1fr; gap:6px;">
+          <label style="font-size:13px; letter-spacing:.04em; color:#6a6a55;">Number attending (including you)</label>
+          <input class="eve-in" type="number" min="1" value="1" style="padding:13px 16px; border:1px solid #E4D3A0; border-radius:10px; background:#fff; font-size:15px; color:#3d4f2e;">
+        </div>
+        <textarea class="eve-in" rows="2" placeholder="Anything we should know? (allergies, accessibility…)" style="padding:13px 16px; border:1px solid #E4D3A0; border-radius:10px; background:#fff; font-size:15px; color:#3d4f2e; resize:vertical;"></textarea>
+        <button type="submit" style="margin-top:6px; padding:15px; background:#8EA86F; color:#fff; border:none; border-radius:999px; font-size:15px; letter-spacing:.08em; cursor:pointer;">Confirm my spot</button>
+      </form>
+    </div>
+    </sc-if>
+    <sc-if value="{{ submitted }}">
+    <div style="text-align:center; padding:20px 0;">
+      <img src="assets/floral/eve-bloom-purple.png" alt="" style="height:120px; width:auto; margin-bottom:10px;">
+      <h2 style="margin:0 0 10px; font-family:'Tangerine',cursive; font-weight:700; font-size:58px; line-height:.95; color:#3d4f2e;">You're all set</h2>
+      <p style="font-style:italic; font-size:17px; line-height:1.6; color:#5a6b49; max-width:380px; margin:0 auto;">Your spot is reserved. We'll email you the final date, time, and location details soon — we can't wait to see you.</p>
+      <span onClick="{{ closeModal }}" style="display:inline-block; margin-top:24px; padding:13px 30px; background:#3d4f2e; color:#E9CF82; border-radius:999px; font-size:14px; letter-spacing:.08em; cursor:pointer;">Done</span>
+    </div>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  // ===== Supabase (real auth + live sync) =====
+  SB_URL = 'https://uengklmhmskuiuzpvntu.supabase.co';
+  SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlbmdrbG1obXNrdWl1enB2bnR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM0MzMwODAsImV4cCI6MjA5OTAwOTA4MH0.BrCD0RJhcjXi_OX8kBxMI3fFGVgFeByuRaA7klhYvqc';
+  EMPLOYEES = {
+    'joslyn@welcometoeve.com': { key: 'joslyn', name: 'Joslyn René', first: 'Joslyn', dot: '#8EA86F', owner: true },
+    'ashley@welcometoeve.com': { key: 'ashley', name: 'Ashley Liu',  first: 'Ashley', dot: '#9a7bc0', owner: false },
+  };
+  empFor(email) {
+    const e = (email || '').toLowerCase();
+    return this.EMPLOYEES[e] || { key: e, name: email, first: (email || '').split('@')[0], dot: '#8EA86F', owner: e === 'joslyn@welcometoeve.com' };
+  }
+
+  // ===== Money model (mirrors Boss Lady Tings, EVE business) =====
+  INCOME_TYPES = ['Ticket Sales', 'Grant', 'Sponsorship', 'Donation', 'Membership', 'Merch', 'Other'];
+  EXPENSE_CATS = ['Decor', 'Food & Bev', 'Business Meals', 'Marketing', 'Utilities', 'Venue', 'Supplies', 'Transportation', 'Software', 'Phone Bill', 'iPad', 'Internet', 'Other'];
+  PAY_METHODS = ['— Select —', 'Business Card', 'Personal Card', 'Venmo', 'PayPal', 'Cash', 'EventBrite Portal', 'Bank Transfer', 'Other'];
+  SC_MAP = {
+    'Supplies': 'Supplies (ln 22)', 'Food & Bev': 'Meals (ln 24b)', 'Business Meals': 'Meals — 50% (ln 24b)',
+    'Travel': 'Travel (ln 24a)', 'Transportation': 'Car & truck (ln 9)', 'Platform Fees': 'Commissions (ln 10)',
+    'Marketing': 'Advertising (ln 8)', 'Software': 'Office expense (ln 18)', 'Utilities': 'Utilities (ln 25)',
+    'Venue': 'Rent/lease (ln 20b)', 'Decor': 'Supplies (ln 22)', 'Phone Bill': 'Office expense — 15% (ln 18)',
+    'iPad': 'Equipment — 25% (ln 13)', 'Internet': 'Utilities — 20% (ln 25)', 'Other': 'Other expenses (ln 48)',
+  };
+  SC_MULT = { 'Business Meals': 0.5, 'Phone Bill': 0.15, 'iPad': 0.25, 'Internet': 0.20 };
+
+  DEFAULT_TASKS = [
+    { task: 'Send EVE materials to Ashley', priority: 'High', notes: 'Brand kit, peony illustrations, colors & fonts, vision doc — so Ashley has full context.', progress: 'Complete', deadline: 'Jun 20', assignment: 'René' },
+    { task: 'Research grants', priority: 'High', notes: 'Women / small-biz / community grants — CA + federal. Outcome shapes LLC timing.', progress: 'Not started', deadline: 'Jun 30 — ongoing', assignment: 'Both' },
+    { task: 'Build website', priority: 'High', notes: 'Landing page first: vision, first event, email signup. Polish later.', progress: 'Started', deadline: 'Jul 11', assignment: 'René' },
+    { task: 'LLC registration', priority: 'Medium', notes: 'Hold until grant requirements are clear — some grants need a registered entity, some don’t.', progress: 'Not started', deadline: 'After grants', assignment: 'Both' },
+    { task: 'Test make the recipe', priority: 'Medium', notes: 'Trial run of the event’s signature treat / drink before the real thing.', progress: 'Not started', deadline: 'Jul 15', assignment: 'Both' },
+    { task: 'Post planning for the event', priority: 'Medium', notes: 'Content calendar for the lead-up — what we post and when.', progress: 'Not started', deadline: 'Jul 15', assignment: 'Ashley' },
+    { task: 'About Us posts', priority: 'Medium', notes: 'Intro René + Ashley and EVE’s why. Warm, first-person.', progress: 'Not started', deadline: 'Jul 15', assignment: 'Both' },
+    { task: 'Fliers & marketing material', priority: 'Low', notes: 'Print + digital. Reuse EVE palette & fonts for a cohesive look.', progress: 'Not started', deadline: 'Flexible', assignment: 'René' },
+  ];
+
+  state = { page: 'home', modal: null, submitted: false, selected: null,
+            authed: false, authUser: null, emailInput: '', pwInput: '', loginError: false, loginErrorMsg: '',
+            loginBusy: false, sbReady: false, loginLog: [],
+            dashView: 'home', tasks: [], saveStatus: 'All changes saved',
+            income: [], expenses: [], periodMode: 'all', periodYear: '', rangeStart: '', rangeEnd: '', importMsg: '' };
+
+  componentDidMount() {
+    this.sb = null;
+    this.saveTimers = {};
+    this.focusedId = null;
+    this.setState({ periodYear: String(new Date().getFullYear()) });
+    this.initSupabase();
+  }
+
+  async initSupabase() {
+    // wait for the CDN script to define window.supabase
+    for (let i = 0; i < 60 && !(window.supabase && window.supabase.createClient); i++) {
+      await new Promise((r) => setTimeout(r, 100));
+    }
+    if (!(window.supabase && window.supabase.createClient)) {
+      this.setState({ loginErrorMsg: 'Could not reach the server. Check your connection and refresh.', loginError: true });
+      return;
+    }
+    this.sb = window.supabase.createClient(this.SB_URL, this.SB_KEY);
+    this.setState({ sbReady: true });
+    const { data } = await this.sb.auth.getSession();
+    if (data && data.session) this.onAuthed(data.session.user);
+    this.sb.auth.onAuthStateChange((_evt, session) => {
+      if (session && session.user) { this.onAuthed(session.user); }
+      else { this._authedFlag = false; this.setState({ authed: false, authUser: null }); }
+    });
+  }
+
+  async onAuthed(user) {
+    if (this._authedFlag) return;
+    this._authedFlag = true;
+    const emp = this.empFor(user.email);
+    this.setState({ authed: true, authUser: emp, emailInput: '', pwInput: '', loginError: false });
+    await this.loadAll();
+    this.subscribeRealtime();
+  }
+
+  // ---- field mappers (db snake_case <-> app) ----
+  mapTodo(r)   { return { id: r.id, task: r.task || '', priority: r.priority || 'Medium', notes: r.notes || '', progress: r.progress || 'Not started', deadline: r.deadline || '', assignment: r.assignment || 'Both', sort: r.sort || 0 }; }
+  mapIncome(r) { return { id: r.id, type: r.type || 'Ticket Sales', source: r.source || '', amount: r.amount == null ? '' : String(r.amount), date: r.date || '', note: r.note || '' }; }
+  mapExpense(r){ return { id: r.id, date: r.date || '', vendor: r.vendor || '', amount: r.amount == null ? '' : String(r.amount), category: r.category || 'Supplies', payMethod: r.pay_method || '— Select —', note: r.note || '' }; }
+  toDbExpense(x){ return { date: x.date || null, vendor: x.vendor, amount: parseFloat(x.amount) || 0, category: x.category, pay_method: x.payMethod, note: x.note }; }
+  toDbIncome(x){ return { type: x.type, source: x.source, amount: parseFloat(x.amount) || 0, date: x.date || null, note: x.note }; }
+
+  async loadAll() {
+    if (!this.sb) return;
+    const [td, inc, exp] = await Promise.all([
+      this.sb.from('todos').select('*').order('sort', { ascending: true }).order('created_at', { ascending: true }),
+      this.sb.from('income').select('*').order('date', { ascending: false }).order('created_at', { ascending: false }),
+      this.sb.from('expenses').select('*').order('date', { ascending: false }).order('created_at', { ascending: false }),
+    ]);
+    let tasks = (td.data || []).map((r) => this.mapTodo(r));
+    if (tasks.length === 0 && this.state.authUser && this.state.authUser.owner) {
+      // seed the starter task list once
+      const seed = this.DEFAULT_TASKS.map((t, i) => ({ task: t.task, priority: t.priority, notes: t.notes, progress: t.progress, deadline: t.deadline, assignment: t.assignment, sort: i }));
+      const { data } = await this.sb.from('todos').insert(seed).select();
+      tasks = (data || []).map((r) => this.mapTodo(r)).sort((a, b) => a.sort - b.sort);
+    }
+    this.setState({
+      tasks,
+      income: (inc.data || []).map((r) => this.mapIncome(r)),
+      expenses: (exp.data || []).map((r) => this.mapExpense(r)),
+    });
+  }
+
+  async loadLoginLog() {
+    if (!this.sb) return;
+    const { data } = await this.sb.from('login_events').select('*').order('created_at', { ascending: false });
+    this.setState({ loginLog: (data || []).map((e) => ({ name: e.user_name, email: e.user_email, dot: (this.empFor(e.user_email).dot), ts: e.created_at })) });
+  }
+
+  subscribeRealtime() {
+    if (!this.sb || this._sub) return;
+    const applyRow = (table, key, mapper) => (payload) => {
+      const et = payload.eventType;
+      this.setState((s) => {
+        let arr = s[key].slice();
+        if (et === 'DELETE') { arr = arr.filter((r) => r.id !== payload.old.id); }
+        else {
+          const row = mapper(payload.new);
+          const idx = arr.findIndex((r) => r.id === row.id);
+          if (idx === -1) { arr = (key === 'tasks') ? [...arr, row] : [row, ...arr]; }
+          else if (this.focusedId !== row.id) { arr = arr.slice(); arr[idx] = row; }
+        }
+        return { [key]: arr };
+      });
+    };
+    this._sub = this.sb.channel('eve-sync')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'todos' },    applyRow('todos', 'tasks', (r) => this.mapTodo(r)))
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'income' },   applyRow('income', 'income', (r) => this.mapIncome(r)))
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'expenses' }, applyRow('expenses', 'expenses', (r) => this.mapExpense(r)))
+      .subscribe();
+  }
+
+  // ---- debounced write of a single edited row ----
+  queueSave(table, id, dbRow) {
+    if (!this.sb) return;
+    clearTimeout(this.saveTimers[id]);
+    this.saveTimers[id] = setTimeout(async () => {
+      await this.sb.from(table).update(dbRow).eq('id', id);
+      this.setState({ saveStatus: 'Saved ✓' });
+    }, 500);
+  }
+
+  nav(p) {
+    return () => {
+      this.setState({ page: p, submitted: false, modal: null, pwInput: '', loginError: false });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+  }
+
+  doLogin = async (e) => {
+    e.preventDefault();
+    if (!this.sb) { this.setState({ loginError: true, loginErrorMsg: 'Still connecting — try again in a moment.' }); return; }
+    const password = this.state.pwInput;
+    if (!password) { this.setState({ loginError: true, loginErrorMsg: 'Enter your password.' }); return; }
+    this.setState({ loginBusy: true, loginError: false });
+    // Password-only UX: try each employee account with the typed password; first match wins.
+    let signedUser = null, matchedEmail = null;
+    for (const email of Object.keys(this.EMPLOYEES)) {
+      const { data, error } = await this.sb.auth.signInWithPassword({ email, password });
+      if (!error && data && data.user) { signedUser = data.user; matchedEmail = email; break; }
+    }
+    if (!signedUser) { this.setState({ loginBusy: false, loginError: true, loginErrorMsg: "That password wasn't recognized." }); return; }
+    const emp = this.empFor(matchedEmail);
+    try { await this.sb.from('login_events').insert({ user_email: matchedEmail, user_name: emp.name }); } catch (err) {}
+    this.setState({ loginBusy: false });
+    this.onAuthed(signedUser);
+  };
+
+  doLogout = async () => {
+    this._authedFlag = false;
+    try { if (this.sb) await this.sb.auth.signOut(); } catch (e) {}
+    this.setState({ authed: false, authUser: null, pwInput: '', emailInput: '', loginError: false, dashView: 'home' });
+  };
+
+  clearLog = async () => {
+    if (!this.sb) return;
+    await this.sb.from('login_events').delete().gte('created_at', '1970-01-01');
+    this.setState({ loginLog: [] });
+  };
+
+  markEditing(id) {
+    this.focusedId = id;
+    clearTimeout(this._focusClear);
+    this._focusClear = setTimeout(() => { this.focusedId = null; }, 1500);
+  }
+
+  editField = (e) => {
+    const { id, field } = e.target.dataset;
+    const val = e.target.value;
+    this.markEditing(id);
+    const tasks = this.state.tasks.map((t) => (t.id === id ? { ...t, [field]: val } : t));
+    this.setState({ tasks, saveStatus: 'Saving…' });
+    this.queueSave('todos', id, { [field]: val });
+  };
+
+  addTask = async () => {
+    if (!this.sb) return;
+    const sort = this.state.tasks.length;
+    const { data } = await this.sb.from('todos').insert({ task: '', priority: 'Medium', notes: '', progress: 'Not started', deadline: '', assignment: 'Both', sort }).select().single();
+    if (data) { const row = this.mapTodo(data); this.setState((s) => ({ tasks: s.tasks.some((t) => t.id === row.id) ? s.tasks : [...s.tasks, row], saveStatus: 'Task added' })); }
+  };
+
+  removeTask = async (id) => {
+    this.setState((s) => ({ tasks: s.tasks.filter((t) => t.id !== id), saveStatus: 'Task removed' }));
+    if (this.sb) await this.sb.from('todos').delete().eq('id', id);
+  };
+
+  // ===== Money: formatting & filtering =====
+  fmt(n) {
+    const v = (parseFloat(n) || 0);
+    return '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  inPeriod(dateStr) {
+    if (!dateStr) return this.state.periodMode === 'all';
+    const m = this.state.periodMode;
+    if (m === 'all') return true;
+    if (m === 'year') return dateStr.slice(0, 4) === String(this.state.periodYear);
+    if (m === 'range') {
+      const { rangeStart, rangeEnd } = this.state;
+      if (rangeStart && dateStr < rangeStart) return false;
+      if (rangeEnd && dateStr > rangeEnd) return false;
+      return true;
+    }
+    return true;
+  }
+  filteredIncome() { return this.state.income.filter((r) => this.inPeriod(r.date)); }
+  filteredExpenses() { return this.state.expenses.filter((e) => this.inPeriod(e.date)); }
+  sum(arr) { return arr.reduce((s, x) => s + (parseFloat(x.amount) || 0), 0); }
+
+  // ===== Money: CRUD =====
+  addIncome = async () => {
+    if (!this.sb) return;
+    const today = new Date().toISOString().slice(0, 10);
+    const { data } = await this.sb.from('income').insert({ type: 'Ticket Sales', source: '', amount: 0, date: today, note: '' }).select().single();
+    if (data) { const row = this.mapIncome(data); this.setState((s) => ({ income: s.income.some((r) => r.id === row.id) ? s.income : [row, ...s.income], saveStatus: 'Income added' })); }
+  };
+  editIncome = (e) => {
+    const { id, field } = e.target.dataset;
+    const val = e.target.value;
+    this.markEditing(id);
+    const income = this.state.income.map((r) => (r.id === id ? { ...r, [field]: val } : r));
+    this.setState({ income, saveStatus: 'Saving…' });
+    const db = field === 'amount' ? { amount: parseFloat(val) || 0 } : (field === 'date' ? { date: val || null } : { [field]: val });
+    this.queueSave('income', id, db);
+  };
+  removeIncome = async (id) => {
+    this.setState((s) => ({ income: s.income.filter((r) => r.id !== id), saveStatus: 'Removed' }));
+    if (this.sb) await this.sb.from('income').delete().eq('id', id);
+  };
+  addExpense = async () => {
+    if (!this.sb) return;
+    const today = new Date().toISOString().slice(0, 10);
+    const { data } = await this.sb.from('expenses').insert({ date: today, vendor: '', amount: 0, category: 'Supplies', pay_method: '— Select —', note: '' }).select().single();
+    if (data) { const row = this.mapExpense(data); this.setState((s) => ({ expenses: s.expenses.some((x) => x.id === row.id) ? s.expenses : [row, ...s.expenses], saveStatus: 'Expense added' })); }
+  };
+  editExpense = (e) => {
+    const { id, field } = e.target.dataset;
+    const val = e.target.value;
+    this.markEditing(id);
+    const expenses = this.state.expenses.map((x) => (x.id === id ? { ...x, [field]: val } : x));
+    this.setState({ expenses, saveStatus: 'Saving…' });
+    let db;
+    if (field === 'amount') db = { amount: parseFloat(val) || 0 };
+    else if (field === 'date') db = { date: val || null };
+    else if (field === 'payMethod') db = { pay_method: val };
+    else db = { [field]: val };
+    this.queueSave('expenses', id, db);
+  };
+  removeExpense = async (id) => {
+    this.setState((s) => ({ expenses: s.expenses.filter((x) => x.id !== id), saveStatus: 'Removed' }));
+    if (this.sb) await this.sb.from('expenses').delete().eq('id', id);
+  };
+
+  // ===== Money: Schedule C =====
+  schedCLines() {
+    const map = {};
+    this.filteredExpenses().forEach((e) => {
+      const line = this.SC_MAP[e.category] || 'Other expenses (ln 48)';
+      const mult = this.SC_MULT[e.category] !== undefined ? this.SC_MULT[e.category] : 1;
+      map[line] = (map[line] || 0) + (parseFloat(e.amount) || 0) * mult;
+    });
+    return Object.keys(map).sort().map((line) => ({ label: line, amount: this.fmt(map[line]), raw: map[line] }));
+  }
+
+  // ===== Money: CSV / export =====
+  dl(filename, text) {
+    const blob = new Blob([text], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+  }
+  csvRow(cells) {
+    return cells.map((c) => {
+      const s = String(c == null ? '' : c);
+      return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    }).join(',');
+  }
+  exportIncomeCSV = () => {
+    const rows = [['Type', 'Source/Event', 'Amount', 'Date', 'Notes']];
+    this.filteredIncome().forEach((r) => rows.push([r.type, r.source, r.amount, r.date, r.note]));
+    this.dl('eve_income.csv', rows.map((r) => this.csvRow(r)).join('\n'));
+  };
+  exportExpenseCSV = () => {
+    const rows = [['Date', 'Vendor', 'Amount', 'Category', 'Payment Method', 'Note', 'Schedule C Line']];
+    this.filteredExpenses().forEach((e) => rows.push([e.date, e.vendor, e.amount, e.category, e.payMethod, e.note, this.SC_MAP[e.category] || '']));
+    this.dl('eve_expenses.csv', rows.map((r) => this.csvRow(r)).join('\n'));
+  };
+  // Matches BLT exportCSV column order for the EVE business
+  exportBLTCSV = () => {
+    const rows = [['Business', 'Date', 'Time', 'Vendor', 'Amount', 'Category', 'Payment Method', 'Note', 'Receipts', 'Schedule C Line']];
+    this.filteredExpenses().forEach((e) => rows.push(['EVE', e.date, '', e.vendor, e.amount, e.category, e.payMethod, e.note, '', this.SC_MAP[e.category] || '']));
+    this.dl('EVE_expenses_BLT.csv', rows.map((r) => this.csvRow(r)).join('\n'));
+  };
+  exportSchedCCSV = () => {
+    const rows = [['Schedule C Line', 'Deductible Amount']];
+    this.schedCLines().forEach((l) => rows.push([l.label, l.raw.toFixed(2)]));
+    this.dl('eve_schedule_c.csv', rows.map((r) => this.csvRow(r)).join('\n'));
+  };
+  exportPDF = () => {
+    const inc = this.sum(this.filteredIncome());
+    const exp = this.sum(this.filteredExpenses());
+    const net = inc - exp;
+    const per = this.periodLabelText();
+    const incRows = this.filteredIncome().map((r) => `<tr><td>${r.type}</td><td>${r.source || ''}</td><td>${r.date || ''}</td><td style="text-align:right">${this.fmt(r.amount)}</td></tr>`).join('');
+    const expRows = this.filteredExpenses().map((e) => `<tr><td>${e.date || ''}</td><td>${e.vendor || ''}</td><td>${e.category}</td><td style="text-align:right">${this.fmt(e.amount)}</td></tr>`).join('');
+    const scRows = this.schedCLines().map((l) => `<tr><td>${l.label}</td><td style="text-align:right">${l.amount}</td></tr>`).join('');
+    const w = window.open('', '_blank');
+    if (!w) { this.setState({ saveStatus: 'Allow pop-ups to export PDF' }); return; }
+    w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>EVE Financial Report</title>
+      <link href="https://fonts.googleapis.com/css2?family=Tangerine:wght@700&family=Radley&display=swap" rel="stylesheet">
+      <style>
+        body{font-family:'Radley',Georgia,serif;color:#3d4f2e;margin:40px;}
+        h1{font-family:'Tangerine',cursive;font-size:64px;margin:0;color:#3d4f2e;}
+        .eyebrow{letter-spacing:.3em;text-transform:uppercase;color:#B8974A;font-size:12px;}
+        .sub{color:#6a6a55;font-style:italic;margin:2px 0 22px;}
+        .cards{display:flex;gap:14px;margin-bottom:26px;}
+        .card{flex:1;border:1px solid #E4D3A0;border-radius:12px;padding:14px 18px;}
+        .card .lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#B8974A;}
+        .card .val{font-size:26px;font-weight:600;}
+        h2{font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:#B8974A;border-bottom:1px solid #E4D3A0;padding-bottom:6px;margin:26px 0 8px;}
+        table{width:100%;border-collapse:collapse;font-size:13px;}
+        td,th{padding:7px 8px;border-bottom:1px solid #F0EADA;text-align:left;}
+        th{color:#8a6f2a;font-size:11px;letter-spacing:.08em;text-transform:uppercase;}
+        .foot{margin-top:24px;font-size:11px;color:#9a9a86;font-style:italic;}
+        @media print{body{margin:0.6in;}}
+      </style></head><body>
+      <div class="eyebrow">EVE · Financial Report</div>
+      <h1>The whole picture</h1>
+      <div class="sub">${per} · generated ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+      <div class="cards">
+        <div class="card"><div class="lbl">Total income</div><div class="val" style="color:#6a4fa0">${this.fmt(inc)}</div></div>
+        <div class="card"><div class="lbl">Total expenses</div><div class="val" style="color:#b03a2e">${this.fmt(exp)}</div></div>
+        <div class="card"><div class="lbl">Net profit</div><div class="val" style="color:#1db954">${this.fmt(net)}</div></div>
+      </div>
+      <h2>Income</h2><table><tr><th>Type</th><th>Source</th><th>Date</th><th style="text-align:right">Amount</th></tr>${incRows || '<tr><td colspan=4>No income in this period.</td></tr>'}</table>
+      <h2>Expenses</h2><table><tr><th>Date</th><th>Vendor</th><th>Category</th><th style="text-align:right">Amount</th></tr>${expRows || '<tr><td colspan=4>No expenses in this period.</td></tr>'}</table>
+      <h2>Schedule C summary (est.)</h2><table><tr><th>Line</th><th style="text-align:right">Deductible</th></tr>${scRows}</table>
+      <div class="foot">Estimate only — partial deductions applied (Meals 50%, Phone 15%, Internet 20%, iPad 25%). Confirm with a tax professional. Tax form to be revisited once EVE is a registered LLC.</div>
+      <script>window.onload=function(){setTimeout(function(){window.print();},400);}<\/script>
+      </body></html>`);
+    w.document.close();
+  };
+
+  // ===== Money: one-time BLT CSV import =====
+  parseCSV(text) {
+    const rows = []; let row = [], cur = '', q = false;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (q) {
+        if (c === '"' && text[i + 1] === '"') { cur += '"'; i++; }
+        else if (c === '"') q = false;
+        else cur += c;
+      } else {
+        if (c === '"') q = true;
+        else if (c === ',') { row.push(cur); cur = ''; }
+        else if (c === '\n' || c === '\r') { if (c === '\r' && text[i + 1] === '\n') i++; row.push(cur); rows.push(row); row = []; cur = ''; }
+        else cur += c;
+      }
+    }
+    if (cur !== '' || row.length) { row.push(cur); rows.push(row); }
+    return rows.filter((r) => r.some((c) => c.trim() !== ''));
+  }
+  importBLT = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const rows = this.parseCSV(String(reader.result));
+      if (!rows.length) { this.setState({ importMsg: 'No rows found.' }); return; }
+      const header = rows[0].map((h) => h.trim().toLowerCase());
+      const idx = (name) => header.indexOf(name);
+      const di = idx('date'), vi = idx('vendor'), ai = idx('amount'),
+            ci = idx('category'), pi = idx('payment method'), ni = idx('note');
+      const newExp = [];
+      for (let r = 1; r < rows.length; r++) {
+        const row = rows[r];
+        const amt = ai >= 0 ? parseFloat((row[ai] || '').replace(/[$,]/g, '')) : NaN;
+        const vend = vi >= 0 ? (row[vi] || '').trim() : '';
+        if (isNaN(amt) && !vend) continue;
+        if (di < 0 && vi < 0 && ai < 0) continue;
+        newExp.push({
+          id: 'e' + Date.now() + '_' + r,
+          date: di >= 0 ? (row[di] || '').trim() : '',
+          vendor: vend,
+          amount: isNaN(amt) ? '' : String(amt),
+          category: ci >= 0 && this.EXPENSE_CATS.indexOf((row[ci] || '').trim()) >= 0 ? (row[ci] || '').trim() : 'Other',
+          payMethod: pi >= 0 && (row[pi] || '').trim() ? (row[pi] || '').trim() : '— Select —',
+          note: ni >= 0 ? (row[ni] || '').trim() : '',
+        });
+      }
+      if (!newExp.length) { this.setState({ importMsg: 'No expense rows detected in that file.' }); return; }
+      if (!this.sb) { this.setState({ importMsg: 'Not connected — refresh and try again.' }); return; }
+      const dbRows = newExp.map((x) => this.toDbExpense(x));
+      const { data, error } = await this.sb.from('expenses').insert(dbRows).select();
+      if (error) { this.setState({ importMsg: 'Import failed: ' + error.message }); return; }
+      const mapped = (data || []).map((r) => this.mapExpense(r));
+      this.setState((s) => ({ expenses: [...mapped, ...s.expenses], importMsg: `Imported ${mapped.length} expense row(s).` }));
+    };
+    reader.readAsText(file);
+  };
+  periodLabelText() {
+    const m = this.state.periodMode;
+    if (m === 'year') return 'Year ' + this.state.periodYear;
+    if (m === 'range') return (this.state.rangeStart || '…') + ' to ' + (this.state.rangeEnd || '…');
+    return 'All time';
+  }
+
+  renderVals() {
+    const events = [
+      {
+        id: 'toothpaste',
+        month: 'JUL', day: '26', year: '2026',
+        category: 'Learn & Grow',
+        title: 'Homemade All-Natural Toothpaste',
+        desc: 'Mix your own clean, all-natural toothpaste to take home — a hands-on afternoon of making, sharing, and good company.',
+        location: 'Local park / community center · Late July 2026',
+        when: 'Late July 2026 · Local park / community center',
+      },
+    ].map((ev) => ({
+      ...ev,
+      signup: () => this.setState({ modal: 'event', selected: ev, submitted: false }),
+    }));
+
+    const sel = this.state.selected;
+    const active = '#8a6f2a';
+    const idle = '#5c6b4a';
+    const p = this.state.page;
+
+    const fmtLog = this.state.loginLog.map((en) => {
+      const d = new Date(en.ts);
+      return {
+        name: en.name,
+        dot: en.dot || '#8EA86F',
+        date: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        time: d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
+      };
+    });
+
+    const progStyle = {
+      'Complete':    { bg: '#DCF2C2', color: '#4a6b2e', accent: '#8EA86F', icon: '✓' },
+      'Started':     { bg: '#FBEFD6', color: '#8a6f2a', accent: '#E9CF82', icon: '○' },
+      'Not started': { bg: '#F3ECFA', color: '#7d5ea6', accent: '#DABAF5', icon: '○' },
+    };
+    const tasks = this.state.tasks.map((t) => {
+      const ps = progStyle[t.progress] || progStyle['Not started'];
+      return { ...t, progressBg: ps.bg, progressColor: ps.color, accent: ps.accent, icon: ps.icon,
+               remove: () => this.removeTask(t.id) };
+    });
+    const owner = !!(this.state.authUser && this.state.authUser.owner);
+    const last = fmtLog[0];
+
+    // ===== Money computed =====
+    const fInc = this.filteredIncome();
+    const fExp = this.filteredExpenses();
+    const incTotal = this.sum(fInc);
+    const expTotal = this.sum(fExp);
+    const incomeRows = this.state.income.map((r) => ({ ...r, remove: () => this.removeIncome(r.id) }))
+      .filter((r) => this.inPeriod(r.date));
+    const expenseRows = this.state.expenses.map((x) => ({ ...x, remove: () => this.removeExpense(x.id) }))
+      .filter((x) => this.inPeriod(x.date));
+    const byTypeMap = {};
+    fInc.forEach((r) => { byTypeMap[r.type] = (byTypeMap[r.type] || 0) + (parseFloat(r.amount) || 0); });
+    const incomeByType = Object.keys(byTypeMap).map((t) => ({ type: t, total: this.fmt(byTypeMap[t]) }));
+    const years = {};
+    [].concat(this.state.income, this.state.expenses).forEach((x) => { if (x.date) years[x.date.slice(0, 4)] = true; });
+    years[String(new Date().getFullYear())] = true;
+    const yearOptions = Object.keys(years).sort().reverse();
+    const schedC = this.schedCLines();
+    const schedCTotalRaw = schedC.reduce((s, l) => s + l.raw, 0);
+
+    return {
+      isHome: p === 'home',
+      isMission: p === 'mission',
+      isAbout: p === 'about',
+      isEvents: p === 'events',
+      isPortal: p === 'portal',
+
+      cHome: p === 'home' ? active : idle,
+      cMission: p === 'mission' ? active : idle,
+      cAbout: p === 'about' ? active : idle,
+      cEvents: p === 'events' ? active : idle,
+
+      goHome: this.nav('home'),
+      goMission: this.nav('mission'),
+      goAbout: this.nav('about'),
+      goEvents: this.nav('events'),
+      goPortal: this.nav('portal'),
+
+      showLoginGate: p === 'portal' && !this.state.authed,
+      showDashboard: p === 'portal' && this.state.authed,
+      dashHome: this.state.dashView === 'home',
+      dashTodo: this.state.dashView === 'todo',
+      dashStudio: this.state.dashView === 'studio',
+      dashIncome: this.state.dashView === 'income',
+      dashExpense: this.state.dashView === 'expense',
+      dashExport: this.state.dashView === 'export',
+      openTodo: () => this.setState({ dashView: 'todo' }),
+      openStudio: () => this.setState({ dashView: 'studio' }),
+      openIncome: () => this.setState({ dashView: 'income' }),
+      openExpense: () => this.setState({ dashView: 'expense' }),
+      openExport: () => this.setState({ dashView: 'export' }),
+      openStudioTab: () => window.open('eve-studio.html', '_blank'),
+      backToDash: () => this.setState({ dashView: 'home' }),
+      login: this.doLogin,
+      logout: this.doLogout,
+      emailInput: this.state.emailInput,
+      onEmailInput: (e) => this.setState({ emailInput: e.target.value, loginError: false }),
+      pwInput: this.state.pwInput,
+      onPwInput: (e) => this.setState({ pwInput: e.target.value, loginError: false }),
+      loginError: this.state.loginError,
+      loginErrorMsg: this.state.loginErrorMsg || "That email or password wasn't recognized.",
+      loginBtnLabel: this.state.loginBusy ? 'Signing in…' : (this.state.sbReady ? 'Enter portal →' : 'Connecting…'),
+      authFirstName: this.state.authUser ? this.state.authUser.first : '',
+      isOwner: owner,
+      loginLog: fmtLog,
+      loginCount: fmtLog.length,
+      noLogins: fmtLog.length === 0,
+      lastLoginSummary: last ? (last.name + ' · ' + last.date + ' · ' + last.time) : 'none yet',
+      openLoginLog: () => { this.setState({ modal: 'loginlog' }); this.loadLoginLog(); },
+      showLoginLog: this.state.modal === 'loginlog',
+      hasLogins: fmtLog.length > 0,
+      clearLog: this.clearLog,
+
+      tasks,
+      noTasks: tasks.length === 0,
+      addTask: this.addTask,
+      editField: this.editField,
+      saveStatus: this.state.saveStatus,
+      todoOpenCount: this.state.tasks.filter((t) => t.progress !== 'Complete').length,
+      todoDoneCount: this.state.tasks.filter((t) => t.progress === 'Complete').length,
+
+      // ===== Money =====
+      incomeTypes: this.INCOME_TYPES,
+      expenseCats: this.EXPENSE_CATS,
+      payMethods: this.PAY_METHODS,
+      incomeRows,
+      expenseRows,
+      noIncome: incomeRows.length === 0,
+      noExpenses: expenseRows.length === 0,
+      incomeByType,
+      addIncome: this.addIncome,
+      editIncome: this.editIncome,
+      addExpense: this.addExpense,
+      editExpense: this.editExpense,
+      incomeTotalLabel: this.fmt(this.sum(this.state.income)),
+      expenseTotalLabel: this.fmt(this.sum(this.state.expenses)),
+      netProfitLabel: this.fmt(this.sum(this.state.income) - this.sum(this.state.expenses)),
+      incomeFilteredTotal: this.fmt(incTotal),
+      expenseFilteredTotal: this.fmt(expTotal),
+      netProfitFiltered: this.fmt(incTotal - expTotal),
+      periodMode: this.state.periodMode,
+      periodIsYear: this.state.periodMode === 'year',
+      periodIsRange: this.state.periodMode === 'range',
+      periodYear: this.state.periodYear,
+      yearOptions,
+      periodLabel: this.periodLabelText(),
+      rangeStart: this.state.rangeStart,
+      rangeEnd: this.state.rangeEnd,
+      setPeriodMode: (e) => this.setState({ periodMode: e.target.value }),
+      setPeriodYear: (e) => this.setState({ periodYear: e.target.value }),
+      setRangeStart: (e) => this.setState({ rangeStart: e.target.value }),
+      setRangeEnd: (e) => this.setState({ rangeEnd: e.target.value }),
+      schedC,
+      schedCTotal: this.fmt(schedCTotalRaw),
+      exportIncomeCSV: this.exportIncomeCSV,
+      exportExpenseCSV: this.exportExpenseCSV,
+      exportBLTCSV: this.exportBLTCSV,
+      exportSchedCCSV: this.exportSchedCCSV,
+      exportPDF: this.exportPDF,
+      importBLT: this.importBLT,
+      importMsg: this.state.importMsg,
+
+      events,
+
+      openJoin: () => this.setState({ modal: 'join', submitted: false }),
+      signupToothpaste: () => this.setState({ modal: 'event', selected: events[0], submitted: false }),
+      closeModal: () => this.setState({ modal: null, submitted: false }),
+      stop: (e) => e.stopPropagation(),
+
+      showJoin: this.state.modal === 'join',
+      showEventSignup: this.state.modal === 'event',
+      selectedTitle: sel ? sel.title : '',
+      selectedWhen: sel ? sel.when : '',
+
+      submit: (e) => { e.preventDefault(); this.setState({ submitted: true }); },
+      submitted: this.state.submitted,
+      notSubmitted: !this.state.submitted,
+    };
+  }
+}
+</script>
+</body>
+</html>
