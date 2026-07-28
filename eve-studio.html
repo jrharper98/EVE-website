@@ -62,7 +62,6 @@ canvas{border-radius:4px;display:block;max-width:100%;}
   <button class="tab on" id="tab-welcome">Single slide</button>
   <button class="tab" id="tab-quote">Quote</button>
   <button class="tab" id="tab-tips">Carousel</button>
-  <button class="tab" id="tab-peony">The Peony</button>
   <button class="tab" id="tab-poem">Poem</button>
   <button class="tab" id="tab-event">Event Flyer</button>
   <button class="tab" id="tab-blank">Blank (3:4)</button>
@@ -90,12 +89,6 @@ but for herself.</textarea>
       <div class="plabel">Carousel</div>
       <div class="snav" id="tips-snav"></div>
       <div id="tips-editor"></div>
-    </div>
-    <!-- PEONY -->
-    <div class="fields" id="f-peony">
-      <div class="plabel">The Peony carousel</div>
-      <div class="snav" id="peony-snav"></div>
-      <div id="peony-editor"></div>
     </div>
     <!-- POEM -->
     <div class="fields" id="f-event">
@@ -314,13 +307,6 @@ var tips=[
   {label:'Tip 3',num:'03',tipTitle:'Your Third Tip',body:'Write your elaborating paragraph here. Keep it warm, direct and encouraging — two to four sentences works beautifully.'},
   {label:'Tip 4',num:'04',tipTitle:'Your Fourth Tip',body:'Write your elaborating paragraph here. Keep it warm, direct and encouraging — two to four sentences works beautifully.'},
 ];
-var peony=[
-  {label:'Cover',coverTitle:'The Peony',coverSub:'Our flower. Our story.'},
-  {label:'Slide 2',num:'01',sub:'Historical Significance & Symbolism',heading:'A Flower Steeped in History',body:'The peony has been cherished for over 2,000 years across ancient China, Greece, and Rome. Named after Paeon — the Greek physician of the gods — it has long symbolized healing, honor, and feminine power. To us, it represents a woman in full bloom.'},
-  {label:'Slide 3',num:'02',sub:'Health & Wellness',heading:'More Than Beautiful',body:'For centuries, peony roots and petals have been used in traditional medicine — linked to reducing inflammation, easing stress, and supporting hormonal balance. Just like EVE, the peony reminds us that caring for yourself is not a luxury. It is a necessity.'},
-  {label:'Slide 4',num:'03',sub:'Femininity & Strength',heading:'Soft and Unbreakable',body:"The peony's petals are delicate and breathtakingly soft — yet it blooms through cold winters and returns stronger every season. You do not have to be hard to be strong. Like the peony, you are both tender and unstoppable."},
-  {label:'Slide 5',num:'04',sub:'Why EVE Chose the Peony',heading:'Our Flower, Our Promise',body:'The peony blooms on its own time, in its own way, in its fullness. That is the woman EVE was built for. Whether you are just beginning to open or already in full bloom — there is a place for you here. Welcome to your season.'},
-];
 
 // ── ELEMENTS ───────────────────────────────────────────────────────
 // Each element: type='floral'|'text', plus properties
@@ -408,34 +394,9 @@ function defaultElements(tab,slide){
         acc[1],
         tx('Slide number',t.num,       'LavenderLullaby',120,LAV,false,422,342,240,'center'),
         tx('Tip title',   t.tipTitle,  'LavenderLullaby',92,DARK,false,33,514,1000,'center'),
-        tx('Body text',   t.body,      'Radley',36,'#4a6035',true,147,683,800,'center',1.65),
+        tx('Body text',   t.body,      'Radley',40,'#4a6035',true,147,683,800,'center',1.65),
         fl('EVE logo','logo',441,1228,204,0,1),
       ];
-    }
-  } else if(tab==='peony'){
-    if(slide===0){
-      var d=peony[0];
-      els=[
-        fl('Bud left',    'bud',       20,      20,     140, 172,  0.72),
-        fl('Bud right',   'bud',       w-150,   20,     130, 20,   0.65),
-        fl('Hero bloom',  'bloom',     w/2-315, 248,    630, 0,    0.95),
-        tx('Cover title', d.coverTitle,'LavenderLullaby',148,DARK,false,40,160,w-80,'center'),
-        tx('Cover sub',   d.coverSub,  'Radley',30,OLIVE,true,140,1090,w-280,'center'),
-        fl('EVE logo','logo',420,1180,240,0,1),
-      ];
-    } else {
-      var d=peony[slide];
-      var pl=[[{x:w-190,y:10,sz:170,r:20,a:0.78},{x:-10,y:h-190,sz:150,r:-175,a:0.65,f:true}],
-              [{x:20,y:10,sz:160,r:-20,a:0.72},{x:w-170,y:h-180,sz:150,r:175,a:0.68}],
-              [{x:w-190,y:10,sz:170,r:25,a:0.7},{x:20,y:h-190,sz:150,r:-8,a:0.65,f:true}],
-              [{x:20,y:10,sz:160,r:-15,a:0.72},{x:w-170,y:h-180,sz:150,r:170,a:0.62}]];
-      var ps=pl[(slide-1)%4];
-      els=ps.map(function(p,i){return fl('Bud '+(i+1),'bud',p.x,p.y,p.sz,p.r,p.a,p.f||false);});
-      els.push(tx('Slide number','0'+slide,'LavenderLullaby',68,LAV,false,w/2-80,240,160,'center'));
-      els.push(tx('Category',d.sub,'Radley',28,OLIVE,true,140,330,w-280,'center'));
-      els.push(tx('Heading',d.heading,'LavenderLullaby',86,DARK,false,40,430,w-80,'center'));
-      els.push(tx('Body text',d.body,'Radley',36,'#3d4f2e',true,140,520,800,'center',1.65));
-      els.push(fl('EVE logo','logo',420,1180,240,0,1));
     }
   } else if(tab==='event'){
     els=[
@@ -474,7 +435,7 @@ function defaultElements(tab,slide){
       {"img":IMG['leafGreen'],"type":"floral","name":"Leaf sprig (green)","x":867,"y":1180,"w":206,"rot":-92,"alpha":0.85,"flipX":false}
     ];
   } else if(tab==='blank'){
-    els=[];
+    els=[ fl('EVE logo','logo',441,1228,204,0,1) ];
   } else if(tab==='poem'){
     els=[
       {"img":IMG['bloomStem'],"type":"floral","name":"Bloom stem left","x":15,"y":1108,"w":321,"rot":-10,"alpha":0.8,"flipX":true},
@@ -1005,8 +966,8 @@ function updateItemList(){
 }
 
 // ── TAB SWITCHING ──────────────────────────────────────────────────
-var tabIds=['welcome','quote','tips','peony','poem','event','blank'];
-var pvLabels={welcome:'Single slide (3:4)',quote:'Quote (3:4)',tips:'Carousel (3:4)',peony:'The Peony (3:4)',poem:'Poem (3:4)',event:'Event Flyer (4.25×5.5″)',blank:'Blank canvas (3:4)'};
+var tabIds=['welcome','quote','tips','poem','event','blank'];
+var pvLabels={welcome:'Single slide (3:4)',quote:'Quote (3:4)',tips:'Carousel (3:4)',poem:'Poem (3:4)',event:'Event Flyer (4.25×5.5″)',blank:'Blank canvas (3:4)'};
 tabIds.forEach(function(t){
   document.getElementById('tab-'+t).addEventListener('click',function(){
     currentTab=t;currentSlide=0;selectedIdx=-1;
@@ -1015,10 +976,9 @@ tabIds.forEach(function(t){
       document.getElementById('f-'+x).classList.toggle('on',x===t);
     });
     document.getElementById('pvlabel').textContent=pvLabels[t];
-    var showNav=t==='tips'||t==='peony';
+    var showNav=t==='tips';
     document.getElementById('cnav').style.display=showNav?'flex':'none';
     if(t==='tips')buildTipsNav();
-    if(t==='peony')buildPeonyNav();
     document.getElementById('sel-controls').style.display='none';
     updateItemList();render();
   });
@@ -1081,128 +1041,6 @@ function buildTipsEditor(){
   }
 }
 
-function buildPeonyNav(){
-  var nav=document.getElementById('peony-snav');nav.innerHTML='';
-  peony.forEach(function(p,i){
-    var b=document.createElement('button');b.textContent=p.label;b.className=i===currentSlide?'on':'';
-    b.addEventListener('click',function(){currentSlide=i;selectedIdx=-1;buildPeonyNav();buildPeonyEditor();updateItemList();render();});
-    nav.appendChild(b);
-  });
-  buildPeonyEditor();
-}
-
-function buildPeonyEditor(){
-  var area=document.getElementById('peony-editor'),s=currentSlide;
-  if(s===0){
-    area.innerHTML='<label>Cover title</label><input id="pn-ct" value="'+peony[0].coverTitle+'"/>'
-      +'<label>Cover subtitle</label><input id="pn-cs" value="'+peony[0].coverSub+'"/>';
-    function syncP0(){
-      peony[0].coverTitle=document.getElementById('pn-ct').value;
-      peony[0].coverSub=document.getElementById('pn-cs').value;
-      var els=getEls();
-      els.forEach(function(el){
-        if(el.name==='Cover title') el.text=peony[0].coverTitle;
-        if(el.name==='Cover sub') el.text=peony[0].coverSub;
-      });
-      render();
-    }
-    document.getElementById('pn-ct').oninput=syncP0;
-    document.getElementById('pn-cs').oninput=syncP0;
-  } else {
-    area.innerHTML='<label>Slide number</label><input id="pn-num" value="'+peony[s].num+'"/>'
-      +'<label>Category</label><input id="pn-sub" value="'+peony[s].sub+'"/>'
-      +'<label>Heading</label><input id="pn-head" value="'+peony[s].heading+'"/>'
-      +'<label>Body</label><textarea id="pn-bod" rows="4">'+peony[s].body+'</textarea>';
-    function syncPN(){
-      peony[s].num=document.getElementById('pn-num').value;
-      peony[s].sub=document.getElementById('pn-sub').value;
-      peony[s].heading=document.getElementById('pn-head').value;
-      peony[s].body=document.getElementById('pn-bod').value;
-      var els=getEls();
-      els.forEach(function(el){
-        if(el.name==='Slide number') el.text='0'+peony[s].num;
-        if(el.name==='Category') el.text=peony[s].sub;
-        if(el.name==='Heading') el.text=peony[s].heading;
-        if(el.name==='Body text') el.text=peony[s].body;
-      });
-      render();
-    }
-    ['pn-num','pn-sub','pn-head','pn-bod'].forEach(function(id){document.getElementById(id).oninput=syncPN;});
-  }
-}
-
-// sync welcome/quote/poem text inputs to their text elements
-document.addEventListener('input',function(e){
-  var id=e.target.id, els=getEls();
-  function sync(name,val){ els.forEach(function(el){if(el.name===name)el.text=val;}); }
-  if(id==='w-title')   sync('Title', document.getElementById('w-title').value);
-  if(id==='w-tagline') sync('Tagline', document.getElementById('w-tagline').value);
-  if(id==='q-text')    sync('Quote text', document.getElementById('q-text').value);
-  if(id==='q-attr')    sync('Attribution', document.getElementById('q-attr').value);
-  if(id==='p-title')   sync('Poem title', document.getElementById('p-title').value);
-  if(id==='p-body')    sync('Poem body', document.getElementById('p-body').value);
-  if(id==='p-credit')  sync('Credit', document.getElementById('p-credit').value);
-  if(id==='ev-presents') sync('EVE presents', document.getElementById('ev-presents').value);
-  if(id==='ev-name')     sync('Event name',   document.getElementById('ev-name').value);
-  if(id==='ev-date')     sync('Date',         document.getElementById('ev-date').value);
-  if(id==='ev-time')     sync('Time',         document.getElementById('ev-time').value);
-  if(id==='ev-location') sync('Location',     document.getElementById('ev-location').value);
-  if(id==='ev-desc')     sync('Description',  document.getElementById('ev-desc').value);
-  render();
-});
-
-// ── ADD FLORAL ─────────────────────────────────────────────────────
-var floralDisplayNames={openBloom:'Open bloom',openBloomGreen:'Open bloom (green)',openBloomPurple:'Open bloom (purple)',bloom:'Full bloom',bud:'Bud on stem',leaf:'Leaf sprig',bloomLoose:'Loose bloom',bloomStem:'Bloom on stem',bloomPurple:'Full bloom (purple)',budPurple:'Bud on stem (purple)',leafPurple:'Leaf sprig (purple)',bloomLoosePurple:'Loose bloom (purple)',bloomStemPurple:'Bloom on stem (purple)',bloomGreen:'Full bloom (green)',budGreen:'Bud on stem (green)',leafGreen:'Leaf sprig (green)',bloomLooseGreen:'Loose bloom (green)',bloomStemGreen:'Bloom on stem (green)'};
-document.getElementById('add-text-btn').addEventListener('click',function(){
-  var els=getEls();
-  els.push({type:'text',name:'Text',text:'Your text',font:'LavenderLullaby',size:72,color:DARK,italic:false,x:Math.round(W()/2-300),y:Math.round(H()/2-50),w:600,align:'center',lineH:1.3});
-  selectedIdx=els.length-1; updateSelControls(); render();
-});
-document.getElementById('add-floral-btns').addEventListener('click',function(e){
-  var btn=e.target.closest('.add-fl-btn');
-  if(!btn)return;
-  var key=btn.getAttribute('data-key');
-  if(!IMG[key]) IMG[key]=document.getElementById('img-'+key);
-  if(!IMG[key])return;
-  var els=getEls();
-  var w=W(),h=H();
-  // default size based on type
-  var sz={openBloom:260,openBloomGreen:260,openBloomPurple:260,bloom:300,bud:180,leaf:260,bloomLoose:300,bloomStem:280,bloomPurple:300,budPurple:180,leafPurple:260,bloomLoosePurple:300,bloomStemPurple:280,bloomGreen:300,budGreen:180,leafGreen:260,bloomLooseGreen:300,bloomStemGreen:280}[key]||200;
-  els.push({
-    type:'floral',
-    name:floralDisplayNames[key]||key,
-    img:IMG[key],
-    x:Math.round(w/2-sz/2),
-    y:Math.round(h/2-sz/2),
-    w:sz,
-    rot:0,
-    alpha:0.85,
-    flipX:false
-  });
-  selectedIdx=els.length-1;
-  updateSelControls();
-  // If image not yet decoded, render again when it loads
-  if(IMG[key] && !IMG[key].complete){
-    IMG[key].onload=function(){render();};
-  }
-  render();
-});
-
-// ── EVENT IMAGE UPLOAD ────────────────────────────────────────────
-document.addEventListener('change',function(e){
-  if(e.target.id!=='ev-image-upload')return;
-  var file=e.target.files[0];
-  if(!file)return;
-  var reader=new FileReader();
-  reader.onload=function(ev){
-    eventImg=new Image();
-    eventImg.onload=function(){render();};
-    eventImg.src=ev.target.result;
-  };
-  reader.readAsDataURL(file);
-});
-
-// ── RENDER EVENT ──────────────────────────────────────────────────
 function renderEvent(W,H){
   var presents = document.getElementById('ev-presents').value||'';
   var evName   = document.getElementById('ev-name').value||'';
@@ -1318,7 +1156,7 @@ function renderEvent(W,H){
 document.getElementById('savebtn').addEventListener('click',function(){
   var prev=selectedIdx; selectedIdx=-1; render();
   var link=document.createElement('a');
-  var suf=(currentTab==='tips'||currentTab==='peony')?'-slide'+(currentSlide+1):'';
+  var suf=(currentTab==='tips')?'-slide'+(currentSlide+1):'';
   link.download='eve-'+currentTab+suf+'.png';
   link.href=canvas.toDataURL('image/png');
   link.click();
@@ -1339,7 +1177,7 @@ function exportLayout(){
     }
     return '  '+s;
   });
-  var label=(currentTab==='tips'||currentTab==='peony')?(currentTab+' slide '+(currentSlide+1)):currentTab;
+  var label=(currentTab==='tips')?(currentTab+' slide '+(currentSlide+1)):currentTab;
   return '// EVE layout export — '+label+'\n[\n'+parts.join(',\n')+'\n]';
 }
 
