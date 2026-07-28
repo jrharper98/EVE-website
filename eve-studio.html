@@ -1041,6 +1041,27 @@ function buildTipsEditor(){
   }
 }
 
+// ── ADD ELEMENTS ───────────────────────────────────────────────────
+var floralDisplayNames={openBloom:'Open bloom',openBloomGreen:'Open bloom (green)',openBloomPurple:'Open bloom (purple)',bloom:'Full bloom',bud:'Bud on stem',leaf:'Leaf sprig',bloomLoose:'Loose bloom',bloomStem:'Bloom on stem',bloomPurple:'Full bloom (purple)',budPurple:'Bud on stem (purple)',leafPurple:'Leaf sprig (purple)',bloomLoosePurple:'Loose bloom (purple)',bloomStemPurple:'Bloom on stem (purple)',bloomGreen:'Full bloom (green)',budGreen:'Bud on stem (green)',leafGreen:'Leaf sprig (green)',bloomLooseGreen:'Loose bloom (green)',bloomStemGreen:'Bloom on stem (green)'};
+
+document.getElementById('add-text-btn').addEventListener('click',function(){
+  var els=getEls();
+  els.push({type:'text',name:'Text',text:'Your text',font:'LavenderLullaby',size:72,color:DARK,italic:false,x:Math.round(W()/2-300),y:Math.round(H()/2-50),w:600,align:'center',lineH:1.3});
+  selectedIdx=els.length-1; updateSelControls(); render();
+});
+
+document.getElementById('add-floral-btns').addEventListener('click',function(e){
+  var b=e.target.closest('.add-fl-btn'); if(!b)return;
+  var key=b.getAttribute('data-key'); if(!key||!IMG[key])return;
+  var sz={openBloom:260,openBloomGreen:260,openBloomPurple:260,bloom:300,bud:180,leaf:260,bloomLoose:300,bloomStem:280,
+          bloomPurple:300,budPurple:180,leafPurple:260,bloomLoosePurple:300,bloomStemPurple:280,
+          bloomGreen:300,budGreen:180,leafGreen:260,bloomLooseGreen:300,bloomStemGreen:280}[key]||260;
+  var els=getEls();
+  els.push({type:'floral',name:floralDisplayNames[key]||key,img:IMG[key],
+            x:Math.round(W()/2-sz/2),y:Math.round(H()/2-sz/2),w:sz,rot:0,alpha:0.85,flipX:false});
+  selectedIdx=els.length-1; updateSelControls(); render();
+});
+
 function renderEvent(W,H){
   var presents = document.getElementById('ev-presents').value||'';
   var evName   = document.getElementById('ev-name').value||'';
