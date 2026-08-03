@@ -870,7 +870,48 @@ document.getElementById('sl-text').addEventListener('input',function(){
   var el=getEls()[selectedIdx];
   if(el.type!=='text')return;
   el.text=this.value; render();
+  syncPanelFromEls();
 });
+
+// ── PANEL FIELDS → CANVAS TEXT ELEMENTS ────────────────────────────
+// Maps each template's side-panel inputs to the named text elements they drive.
+var FIELD_MAP={
+  welcome:[['w-title','Title'],['w-tagline','Tagline']],
+  quote:[['q-text','Quote text'],['q-attr','Attribution']],
+  poem:[['p-title','Poem title'],['p-body','Poem body'],['p-credit','Credit']]
+};
+function findEl(els,name){ for(var i=0;i<els.length;i++){ if(els[i].type==='text'&&els[i].name===name) return els[i]; } return null; }
+function wireFieldSync(){
+  Object.keys(FIELD_MAP).forEach(function(tab){
+    FIELD_MAP[tab].forEach(function(pair){
+      var input=document.getElementById(pair[0]);
+      if(!input)return;
+      input.addEventListener('input',function(){
+        if(currentTab!==tab)return;
+        var el=findEl(getEls(),pair[1]);
+        if(!el)return;
+        el.text=this.value;
+        if(selectedIdx>=0&&getEls()[selectedIdx]===el){
+          var box=document.getElementById('sl-text');
+          if(box&&box.value!==this.value) box.value=this.value;
+        }
+        render();
+      });
+    });
+  });
+}
+// keep the panel showing what's actually on the canvas
+function syncPanelFromEls(){
+  var pairs=FIELD_MAP[currentTab];
+  if(!pairs)return;
+  var els=getEls();
+  pairs.forEach(function(pair){
+    var input=document.getElementById(pair[0]);
+    var el=findEl(els,pair[1]);
+    if(input&&el&&input.value!==el.text) input.value=el.text;
+  });
+}
+wireFieldSync();
 document.getElementById('color-btns').addEventListener('click',function(e){
   var b=e.target.closest('.bg-btn'); if(!b||selectedIdx<0)return;
   var el=getEls()[selectedIdx];
@@ -980,7 +1021,7 @@ tabIds.forEach(function(t){
     document.getElementById('cnav').style.display=showNav?'flex':'none';
     if(t==='tips')buildTipsNav();
     document.getElementById('sel-controls').style.display='none';
-    updateItemList();render();
+    updateItemList();syncPanelFromEls();render();
   });
 });
 
