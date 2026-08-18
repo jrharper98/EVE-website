@@ -369,12 +369,16 @@ function defaultElements(tab,slide){
   } else if(tab==='tips'){
     if(slide===0){
       els=[
-        fl('Center bloom','bloomPurple', 357, 41,  370, 0, 0.9),
-        tx('Series label',(tips[0].seriesLabel||'').toUpperCase(),'Radley',35,OLIVE,false,145,492,800,'center'),
-        tx('Title',       tips[0].title,'LavenderLullaby',108,DARK,false,40,567,1000,'center'),
-        tx('Bullet 1',    '— '+tips[0].bullets[0],'Radley',42,DARK,false,275,748,700,'left'),
-        tx('Bullet 2',    '— '+tips[0].bullets[1],'Radley',42,DARK,false,278,825,700,'left'),
-        tx('Bullet 3',    '— '+tips[0].bullets[2],'Radley',42,DARK,false,278,904,700,'left'),
+        fl('Leaf sprig','leaf',-20,-33,260,126,0.85),
+        fl('Bud on stem (green)','budGreen',849,-24,239,-126,0.85),
+        fl('Bloom on stem (purple)','bloomStemPurple',-2,1238,225,54,0.85),
+        fl('Loose bloom','bloomLoose',870,1230,200,-54,0.85),
+        fl('Center bloom','bloomPurple', 352, 367,  370, -10, 0.9),
+        tx('Series label',(tips[0].seriesLabel||'').toUpperCase(),'Radley',35,OLIVE,false,141,241,800,'center'),
+        tx('Title',       tips[0].title,'LavenderLullaby',108,DARK,false,40,323,1000,'center'),
+        tx('Bullet 1',    '— '+tips[0].bullets[0],'Radley',42,DARK,false,284,822,700,'left'),
+        tx('Bullet 2',    '— '+tips[0].bullets[1],'Radley',42,DARK,false,283,914,700,'left'),
+        tx('Bullet 3',    '— '+tips[0].bullets[2],'Radley',42,DARK,false,283,1005,700,'left'),
         fl('EVE logo','logo',441,1228,204,0,1),
       ];
     } else {
@@ -469,7 +473,8 @@ var canvas=document.getElementById('cv');
 var ctx=canvas.getContext('2d');
 
 function setSize(){
-  canvas.width=W(); canvas.height=H();
+  // Backing store is sized to the ACTUAL on-screen pixels (see render()'s setTransform),
+  // so thin glyphs like the em-dash rasterize crisply instead of being lost to downscaling.
   // Right column = total width minus left panel (260px) minus gaps/padding
   var availW=Math.min(window.innerWidth - 340, 900);
   if(availW < 300) availW = 600;
@@ -486,8 +491,12 @@ function setSize(){
   var maxH=window.innerHeight - topChrome - innerTop - innerBottom - 8;
   if(maxH < 240) maxH = 240;
   canvasScale=Math.min(availW/W(),maxH/H());
-  canvas.style.width=Math.round(W()*canvasScale)+'px';
-  canvas.style.height=Math.round(H()*canvasScale)+'px';
+  var cssW=Math.round(W()*canvasScale), cssH=Math.round(H()*canvasScale);
+  var dpr=window.devicePixelRatio||1;
+  var bw=Math.round(cssW*dpr), bh=Math.round(cssH*dpr);
+  if(canvas.width!==bw||canvas.height!==bh){ canvas.width=bw; canvas.height=bh; }
+  canvas.style.width=cssW+'px';
+  canvas.style.height=cssH+'px';
 }
 
 // ── DRAWING ────────────────────────────────────────────────────────
@@ -647,6 +656,8 @@ function drawLogoFlourishes(w,h){
 
 function render(){
   setSize();
+  // Map design units (1080×H) onto the device-pixel backing store.
+  ctx.setTransform(canvas.width/W(),0,0,canvas.height/H(),0,0);
   ctx.fillStyle=bgColors[ekey()]||'#F7F5EC';ctx.fillRect(0,0,W(),H());
   ctx.strokeStyle='rgba(142,168,111,0.4)';ctx.lineWidth=1;
   ctx.strokeRect(28,28,W()-56,H()-56);
@@ -870,48 +881,7 @@ document.getElementById('sl-text').addEventListener('input',function(){
   var el=getEls()[selectedIdx];
   if(el.type!=='text')return;
   el.text=this.value; render();
-  syncPanelFromEls();
 });
-
-// ── PANEL FIELDS → CANVAS TEXT ELEMENTS ────────────────────────────
-// Maps each template's side-panel inputs to the named text elements they drive.
-var FIELD_MAP={
-  welcome:[['w-title','Title'],['w-tagline','Tagline']],
-  quote:[['q-text','Quote text'],['q-attr','Attribution']],
-  poem:[['p-title','Poem title'],['p-body','Poem body'],['p-credit','Credit']]
-};
-function findEl(els,name){ for(var i=0;i<els.length;i++){ if(els[i].type==='text'&&els[i].name===name) return els[i]; } return null; }
-function wireFieldSync(){
-  Object.keys(FIELD_MAP).forEach(function(tab){
-    FIELD_MAP[tab].forEach(function(pair){
-      var input=document.getElementById(pair[0]);
-      if(!input)return;
-      input.addEventListener('input',function(){
-        if(currentTab!==tab)return;
-        var el=findEl(getEls(),pair[1]);
-        if(!el)return;
-        el.text=this.value;
-        if(selectedIdx>=0&&getEls()[selectedIdx]===el){
-          var box=document.getElementById('sl-text');
-          if(box&&box.value!==this.value) box.value=this.value;
-        }
-        render();
-      });
-    });
-  });
-}
-// keep the panel showing what's actually on the canvas
-function syncPanelFromEls(){
-  var pairs=FIELD_MAP[currentTab];
-  if(!pairs)return;
-  var els=getEls();
-  pairs.forEach(function(pair){
-    var input=document.getElementById(pair[0]);
-    var el=findEl(els,pair[1]);
-    if(input&&el&&input.value!==el.text) input.value=el.text;
-  });
-}
-wireFieldSync();
 document.getElementById('color-btns').addEventListener('click',function(e){
   var b=e.target.closest('.bg-btn'); if(!b||selectedIdx<0)return;
   var el=getEls()[selectedIdx];
@@ -1021,7 +991,7 @@ tabIds.forEach(function(t){
     document.getElementById('cnav').style.display=showNav?'flex':'none';
     if(t==='tips')buildTipsNav();
     document.getElementById('sel-controls').style.display='none';
-    updateItemList();syncPanelFromEls();render();
+    updateItemList();render();
   });
 });
 
@@ -1052,12 +1022,13 @@ function buildTipsEditor(){
       tips[0].bullets[2]=document.getElementById('ts-b2').value;
       // update text elements
       var els=getEls();
+      function dash(s){return '\u2014 '+String(s||'').replace(/^\s*[\u2014\u2013-]+\s*/,'');}
       els.forEach(function(el){
         if(el.name==='Series label') el.text=tips[0].seriesLabel.toUpperCase();
         if(el.name==='Title') el.text=tips[0].title;
-        if(el.name==='Bullet 1') el.text='— '+tips[0].bullets[0];
-        if(el.name==='Bullet 2') el.text='— '+tips[0].bullets[1];
-        if(el.name==='Bullet 3') el.text='— '+tips[0].bullets[2];
+        if(el.name==='Bullet 1') el.text=dash(tips[0].bullets[0]);
+        if(el.name==='Bullet 2') el.text=dash(tips[0].bullets[1]);
+        if(el.name==='Bullet 3') el.text=dash(tips[0].bullets[2]);
       });
       render();
     }
@@ -1216,11 +1187,28 @@ function renderEvent(W,H){
 
 // ── SAVE ───────────────────────────────────────────────────────────
 document.getElementById('savebtn').addEventListener('click',function(){
-  var prev=selectedIdx; selectedIdx=-1; render();
+  var prev=selectedIdx; selectedIdx=-1;
+  // Render full-resolution offscreen (the preview canvas is display-sized).
+  var oc=document.createElement('canvas'); oc.width=W(); oc.height=H();
+  var octx=oc.getContext('2d');
+  var savedCtx=ctx, savedScale=canvasScale;
+  ctx=octx; canvasScale=1;
+  octx.fillStyle=bgColors[ekey()]||'#F7F5EC'; octx.fillRect(0,0,W(),H());
+  octx.strokeStyle='rgba(142,168,111,0.4)'; octx.lineWidth=1;
+  octx.strokeRect(28,28,W()-56,H()-56);
+  var sels=getEls();
+  for(var i=0;i<sels.length;i++){
+    var el=sels[i];
+    if(el.type==='floral') drawFloral(el,false);
+    else if(el.type==='panel') drawPanelEl(el,false);
+    else if(el.type==='divider') drawDividerEl(el,false);
+    else drawTextEl(el,false);
+  }
+  ctx=savedCtx; canvasScale=savedScale;
   var link=document.createElement('a');
   var suf=(currentTab==='tips')?'-slide'+(currentSlide+1):'';
   link.download='eve-'+currentTab+suf+'.png';
-  link.href=canvas.toDataURL('image/png');
+  link.href=oc.toDataURL('image/png');
   link.click();
   selectedIdx=prev; render();
 });
