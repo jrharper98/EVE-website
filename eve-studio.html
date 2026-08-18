@@ -462,6 +462,38 @@ function defaultElements(tab,slide){
   return els;
 }
 
+// ── CONTROL-PANEL FIELD SYNC (welcome / quote / poem / event) ───────
+var fieldSync={
+  'w-title':{tab:'welcome',name:'Title'},
+  'w-tagline':{tab:'welcome',name:'Tagline'},
+  'q-text':{tab:'quote',name:'Quote text'},
+  'q-attr':{tab:'quote',name:'Attribution'},
+  'p-title':{tab:'poem',name:'Poem title'},
+  'p-body':{tab:'poem',name:'Poem body'},
+  'p-credit':{tab:'poem',name:'Credit'},
+  'ev-presents':{tab:'event',name:'EVE presents'},
+  'ev-name':{tab:'event',name:'Event name'},
+  'ev-date':{tab:'event',name:'Date'},
+  'ev-time':{tab:'event',name:'Time'},
+  'ev-location':{tab:'event',name:'Location'},
+  'ev-desc':{tab:'event',name:'Description'}
+};
+function wireFieldSync(){
+  Object.keys(fieldSync).forEach(function(id){
+    var inp=document.getElementById(id); if(!inp) return;
+    inp.addEventListener('input',function(){
+      var m=fieldSync[id];
+      if(currentTab!==m.tab) return;
+      var els=getEls();
+      for(var i=0;i<els.length;i++){
+        if(els[i].type==='text' && els[i].name===m.name){ els[i].text=inp.value; break; }
+      }
+      render();
+    });
+  });
+}
+wireFieldSync();
+
 function getEls(){
   var k=ekey();
   if(!elements[k]) elements[k]=defaultElements(currentTab,currentSlide);
