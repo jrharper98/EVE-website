@@ -196,6 +196,27 @@
   .profit-block .plain{font-style:italic;color:var(--forest);opacity:.8;margin:0;font-size:.95rem;}
 
   footer{text-align:center;color:var(--olive);font-style:italic;font-size:.8rem;margin-top:8px;}
+
+  /* saved projections */
+  .btn-save{
+    background:var(--forest);
+    color:var(--gold);
+    border-radius:11px;
+    padding:11px 18px;
+    font-size:.95rem;
+    height:44px;
+  }
+  .btn-save:hover{filter:brightness(1.12);}
+  .saved-list{list-style:none;margin:14px 0 0;padding:0;}
+  .saved-list li{
+    display:flex;align-items:center;gap:10px;
+    padding:10px 12px;border-radius:11px;background:var(--cream);margin-bottom:7px;
+  }
+  .saved-list .s-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;}
+  .saved-list .s-name:hover{color:var(--olive);}
+  .saved-list .s-meta{font-size:.78rem;color:var(--olive);font-style:italic;white-space:nowrap;}
+  .saved-status{font-size:.8rem;font-style:italic;color:var(--olive);margin:10px 0 0;}
+  .saved-status.err{color:var(--terracotta);}
 </style>
 </head>
 <body>
@@ -269,9 +290,22 @@
     <p class="plain" id="profitPlain">Break-even at your estimated turnout.</p>
   </div>
 
+  <!-- SAVED PROJECTIONS -->
+  <section class="card">
+    <p class="card-title">Saved projections</p>
+    <div class="add-row" style="grid-template-columns:1fr auto;">
+      <p class="hint" style="margin:0; align-self:center;">Save this projection to look back at what we planned to charge.</p>
+      <button class="btn-save" id="saveProj">Save projection</button>
+    </div>
+    <p class="saved-status" id="savedStatus"></p>
+    <ul class="saved-list" id="savedList"></ul>
+    <p class="empty" id="savedEmpty">Nothing saved yet.</p>
+  </section>
+
   <footer>Built for EVE · figures update live as you type.</footer>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function(){
   "use strict";
@@ -416,6 +450,107 @@
   actualEl.addEventListener('input', recalc);
 
   recalc();
+
+  // ===== Saved projections (Supabase, staff sign-in shared with the portal) =====
+  var SB_URL = 'https://uengklmhmskuiuzpvntu.supabase.co';
+  var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlbmdrbG1obXNrdWl1enB2bnR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM0MzMwODAsImV4cCI6MjA5OTAwOTA4MH0.BrCD0RJhcjXi_OX8kBxMI3fFGVgFeByuRaA7klhYvqc';
+  var sb = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(SB_URL, SB_KEY) : null;
+
+  var eventNameEl = document.getElementById('eventName');
+  var saveBtn     = document.getElementById('saveProj');
+  var savedList   = document.getElementById('savedList');
+  var savedEmpty  = document.getElementById('savedEmpty');
+  var savedStatus = document.getElementById('savedStatus');
+  var saved = [];
+
+  function setStatus(msg, isErr){
+    savedStatus.textContent = msg || '';
+    savedStatus.className = 'saved-status' + (isErr ? ' err' : '');
+  }
+
+  function fmtDate(iso){
+    try { var d = new Date(iso); return d.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}); }
+    catch(e){ return ''; }
+  }
+
+  function renderSaved(){
+    savedList.innerHTML = '';
+    savedEmpty.style.display = saved.length ? 'none' : 'block';
+    saved.forEach(function(row){
+      var li = document.createElement('li');
+      var name = document.createElement('span');
+      name.className = 's-name';
+      name.textContent = row.name || '(untitled)';
+      name.title = 'Load this projection';
+      name.addEventListener('click', function(){ loadProjection(row); });
+      var meta = document.createElement('span');
+      meta.className = 's-meta';
+      var exps = Array.isArray(row.expenses) ? row.expenses : [];
+      var tot = exps.reduce(function(s,e){ return s + (parseFloat(e.amount)||0); }, 0);
+      meta.textContent = money(tot) + ' · ' + fmtDate(row.created_at);
+      var rm = document.createElement('button');
+      rm.className = 'btn-remove';
+      rm.setAttribute('aria-label', 'Delete ' + (row.name || 'projection'));
+      rm.textContent = '\u00d7';
+      rm.addEventListener('click', function(){ deleteProjection(row.id); });
+      li.appendChild(name); li.appendChild(meta); li.appendChild(rm);
+      savedList.appendChild(li);
+    });
+  }
+
+  function loadProjection(row){
+    eventNameEl.value = row.name || '';
+    var exps = Array.isArray(row.expenses) ? row.expenses : [];
+    expenses = exps.map(function(e){ return { id: nextId++, name: e.name || '', amount: parseFloat(e.amount) || 0 }; });
+    estimateEl.value = row.estimate || 0;
+    actualEl.value = row.actual || 0;
+    recalc();
+    setStatus('Loaded “' + (row.name || 'untitled') + '”.');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function refreshSaved(){
+    if (!sb) return;
+    var res = await sb.from('ticket_projections').select('*').order('created_at', { ascending: false });
+    if (res.error){ setStatus('Sign in through the Employee Portal to see saved projections.', true); return; }
+    saved = res.data || [];
+    renderSaved();
+  }
+
+  async function saveProjection(){
+    if (!sb){ setStatus('Could not reach the database.', true); return; }
+    var name = eventNameEl.value.trim();
+    if (!name){ eventNameEl.focus(); setStatus('Give the event a name first.', true); return; }
+    if (!expenses.length){ setStatus('Add at least one expense before saving.', true); return; }
+    setStatus('Saving…');
+    var rec = {
+      name: name,
+      expenses: expenses.map(function(e){ return { name: e.name, amount: e.amount }; }),
+      estimate: parseInt(estimateEl.value, 10) || 0,
+      actual: parseInt(actualEl.value, 10) || 0
+    };
+    var res = await sb.from('ticket_projections').insert(rec);
+    if (res.error){
+      var msg = /row-level security|violates/i.test(res.error.message)
+        ? 'You need to be signed in — open the calculator from the Employee Portal.'
+        : 'Save failed: ' + res.error.message;
+      setStatus(msg, true); return;
+    }
+    setStatus('Saved “' + name + '” ✓');
+    refreshSaved();
+  }
+
+  async function deleteProjection(id){
+    if (!sb) return;
+    var res = await sb.from('ticket_projections').delete().eq('id', id);
+    if (res.error){ setStatus('Delete failed: ' + res.error.message, true); return; }
+    saved = saved.filter(function(r){ return r.id !== id; });
+    renderSaved();
+    setStatus('Deleted.');
+  }
+
+  saveBtn.addEventListener('click', saveProjection);
+  refreshSaved();
 })();
 </script>
 </body>
