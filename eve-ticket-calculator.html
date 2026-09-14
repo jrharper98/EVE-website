@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EVE · Ticket Price Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tangerine:wght@400;700&family=Radley:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sage:#DCF2C2;
+    --gold:#F0DC6A;
+    --lavender:#DABAF5;
+    --beige:#D6D4B8;
+    --olive:#8EA86F;
+    --forest:#3d4f2e;
+    --terracotta:#b06a52;
+    --cream:#faf8f0;
+    --card:#ffffff;
+    --line:#e4e2d2;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 12% 8%, rgba(218,186,245,.28), transparent 42%),
+      radial-gradient(circle at 88% 4%, rgba(220,242,194,.4), transparent 40%),
+      var(--cream);
+    color:var(--forest);
+    font-family:'Radley', Georgia, serif;
+    line-height:1.5;
+    min-height:100vh;
+    padding:32px 16px 64px;
+  }
+
+  .wrap{max-width:560px;margin:0 auto;}
+
+  header{text-align:center;margin-bottom:28px;}
+  .eyebrow{
+    font-family:'Radley', serif;
+    letter-spacing:.32em;
+    text-transform:uppercase;
+    font-size:.7rem;
+    color:var(--olive);
+    margin:0 0 2px;
+  }
+  h1{
+    font-family:'Tangerine', cursive;
+    font-weight:700;
+    font-size:4.4rem;
+    line-height:.9;
+    margin:0;
+    color:var(--forest);
+  }
+  .subtitle{font-style:italic;color:var(--olive);margin:6px 0 0;font-size:1rem;}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:22px 22px 24px;
+    margin-bottom:18px;
+    box-shadow:0 8px 30px rgba(61,79,46,.06);
+  }
+
+  .card-title{
+    font-family:'Radley', serif;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    font-size:.74rem;
+    color:var(--olive);
+    margin:0 0 14px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .card-title::before{
+    content:"";
+    width:9px;height:9px;border-radius:50%;
+    background:var(--lavender);
+    flex:0 0 auto;
+  }
+
+  label{display:block;font-size:.82rem;color:var(--olive);margin-bottom:5px;}
+
+  input[type="text"], input[type="number"]{
+    width:100%;
+    font-family:'Radley', serif;
+    font-size:1rem;
+    color:var(--forest);
+    background:var(--cream);
+    border:1px solid var(--line);
+    border-radius:11px;
+    padding:11px 13px;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  input:focus{
+    outline:none;
+    border-color:var(--olive);
+    box-shadow:0 0 0 3px rgba(142,168,111,.2);
+  }
+  input[type="number"]{ -moz-appearance:textfield; }
+  input::-webkit-outer-spin-button, input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+
+  /* expense entry row */
+  .add-row{display:grid;grid-template-columns:1fr 118px auto;gap:8px;align-items:end;}
+  .add-row .amt-wrap{position:relative;}
+  .amt-wrap .dollar{
+    position:absolute;left:12px;top:50%;transform:translateY(-50%);
+    color:var(--olive);pointer-events:none;font-size:.95rem;
+  }
+  .amt-wrap input{padding-left:24px;}
+
+  button{
+    font-family:'Radley', serif;
+    cursor:pointer;
+    border:none;
+    transition:transform .12s, filter .15s, background .15s;
+  }
+  button:active{transform:translateY(1px);}
+  .btn-add{
+    background:var(--olive);
+    color:#fff;
+    border-radius:11px;
+    padding:11px 18px;
+    font-size:.95rem;
+    height:44px;
+  }
+  .btn-add:hover{filter:brightness(1.06);}
+
+  .expense-list{list-style:none;margin:16px 0 0;padding:0;}
+  .expense-list li{
+    display:flex;align-items:center;gap:10px;
+    padding:10px 12px;
+    border-radius:11px;
+    background:var(--cream);
+    margin-bottom:7px;
+  }
+  .expense-list .e-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .expense-list .e-amt{font-variant-numeric:tabular-nums;color:var(--forest);}
+  .btn-remove{
+    background:transparent;color:var(--terracotta);
+    font-size:1.15rem;line-height:1;
+    width:26px;height:26px;border-radius:50%;
+  }
+  .btn-remove:hover{background:rgba(176,106,82,.12);}
+  .empty{color:var(--olive);font-style:italic;font-size:.9rem;padding:8px 2px;margin-top:6px;}
+
+  .total-row{
+    display:flex;justify-content:space-between;align-items:baseline;
+    margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);
+  }
+  .total-row .label{font-style:italic;color:var(--olive);}
+  .total-row .val{font-size:1.5rem;font-variant-numeric:tabular-nums;}
+
+  /* two small inputs side by side */
+  .field-pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .hint{font-size:.76rem;color:var(--olive);font-style:italic;margin-top:5px;}
+
+  /* hero price */
+  .price-hero{
+    background:linear-gradient(135deg, var(--sage), var(--gold) 130%);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:26px 22px;
+    text-align:center;
+    margin-bottom:18px;
+  }
+  .price-hero .label{
+    letter-spacing:.2em;text-transform:uppercase;font-size:.72rem;
+    color:var(--forest);opacity:.7;margin:0;
+  }
+  .price-hero .amount{
+    font-family:'Tangerine', cursive;font-weight:700;
+    font-size:5.5rem;line-height:.85;margin:4px 0 2px;
+    color:var(--forest);
+  }
+  .price-hero .note{font-style:italic;font-size:.92rem;color:var(--forest);opacity:.75;margin:0;}
+
+  /* profit block */
+  .profit-block{text-align:center;padding:22px;}
+  .profit-block .label{
+    letter-spacing:.2em;text-transform:uppercase;font-size:.72rem;
+    color:var(--olive);margin:0 0 4px;
+  }
+  .profit-block .amount{
+    font-size:2.6rem;font-variant-numeric:tabular-nums;
+    margin:2px 0 6px;font-family:'Radley',serif;
+  }
+  .profit-block.pos .amount{color:var(--olive);}
+  .profit-block.neg .amount{color:var(--terracotta);}
+  .profit-block.zero .amount{color:var(--forest);}
+  .profit-block .plain{font-style:italic;color:var(--forest);opacity:.8;margin:0;font-size:.95rem;}
+
+  footer{text-align:center;color:var(--olive);font-style:italic;font-size:.8rem;margin-top:8px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">EVE Events</p>
+    <h1>Ticket Calculator</h1>
+    <p class="subtitle">Price it, break even, know your profit.</p>
+  </header>
+
+  <!-- EVENT -->
+  <section class="card">
+    <p class="card-title">Event</p>
+    <label for="eventName">Event name</label>
+    <input type="text" id="eventName" placeholder="e.g. EVE Summer Gathering">
+  </section>
+
+  <!-- EXPENSES -->
+  <section class="card">
+    <p class="card-title">Expenses</p>
+    <div class="add-row">
+      <div>
+        <label for="expName">Item</label>
+        <input type="text" id="expName" placeholder="Venue, catering, florals…">
+      </div>
+      <div class="amt-wrap">
+        <label for="expAmt">Cost</label>
+        <span class="dollar">$</span>
+        <input type="number" id="expAmt" placeholder="0.00" min="0" step="0.01">
+      </div>
+      <button class="btn-add" id="addExpense">Add</button>
+    </div>
+
+    <ul class="expense-list" id="expenseList"></ul>
+    <p class="empty" id="emptyMsg">No expenses yet — add your first one above.</p>
+
+    <div class="total-row">
+      <span class="label">Total expenses</span>
+      <span class="val" id="totalExpenses">$0.00</span>
+    </div>
+  </section>
+
+  <!-- ATTENDEES -->
+  <section class="card">
+    <p class="card-title">Attendance</p>
+    <div class="field-pair">
+      <div>
+        <label for="estimate">Estimated attendees</label>
+        <input type="number" id="estimate" value="10" min="1" step="1">
+        <p class="hint">Used to set the ticket price.</p>
+      </div>
+      <div>
+        <label for="actual">Actual attendees</label>
+        <input type="number" id="actual" value="10" min="0" step="1">
+        <p class="hint">Used to project profit.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICE HERO -->
+  <div class="price-hero">
+    <p class="label">Price per ticket</p>
+    <p class="amount" id="ticketPrice">$0</p>
+    <p class="note" id="priceNote">Add expenses to calculate the break-even price.</p>
+  </div>
+
+  <!-- PROFIT -->
+  <div class="card profit-block zero" id="profitBlock">
+    <p class="label">Estimated profit</p>
+    <p class="amount" id="profitAmount">$0.00</p>
+    <p class="plain" id="profitPlain">Break-even at your estimated turnout.</p>
+  </div>
+
+  <footer>Built for EVE · figures update live as you type.</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var expenses = []; // { id, name, amount }
+  var nextId = 1;
+
+  var expName   = document.getElementById('expName');
+  var expAmt    = document.getElementById('expAmt');
+  var addBtn    = document.getElementById('addExpense');
+  var listEl    = document.getElementById('expenseList');
+  var emptyMsg  = document.getElementById('emptyMsg');
+  var totalEl   = document.getElementById('totalExpenses');
+  var estimateEl= document.getElementById('estimate');
+  var actualEl  = document.getElementById('actual');
+  var priceEl   = document.getElementById('ticketPrice');
+  var priceNote = document.getElementById('priceNote');
+  var profitBlock  = document.getElementById('profitBlock');
+  var profitAmount = document.getElementById('profitAmount');
+  var profitPlain  = document.getElementById('profitPlain');
+
+  function money(n){
+    return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+  function moneyShort(n){
+    // no cents if whole, for the big hero number
+    var whole = Math.round(n * 100) / 100;
+    if (whole % 1 === 0) return '$' + whole.toLocaleString('en-US');
+    return '$' + whole.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+
+  function totalExpenses(){
+    return expenses.reduce(function(sum, e){ return sum + (e.amount || 0); }, 0);
+  }
+
+  function renderExpenses(){
+    listEl.innerHTML = '';
+    if (expenses.length === 0){
+      emptyMsg.style.display = 'block';
+    } else {
+      emptyMsg.style.display = 'none';
+      expenses.forEach(function(e){
+        var li = document.createElement('li');
+
+        var name = document.createElement('span');
+        name.className = 'e-name';
+        name.textContent = e.name;
+
+        var amt = document.createElement('span');
+        amt.className = 'e-amt';
+        amt.textContent = money(e.amount);
+
+        var rm = document.createElement('button');
+        rm.className = 'btn-remove';
+        rm.setAttribute('aria-label', 'Remove ' + e.name);
+        rm.textContent = '\u00d7';
+        rm.addEventListener('click', function(){
+          expenses = expenses.filter(function(x){ return x.id !== e.id; });
+          recalc();
+        });
+
+        li.appendChild(name);
+        li.appendChild(amt);
+        li.appendChild(rm);
+        listEl.appendChild(li);
+      });
+    }
+  }
+
+  function recalc(){
+    renderExpenses();
+
+    var total = totalExpenses();
+    totalEl.textContent = money(total);
+
+    var estimate = parseFloat(estimateEl.value) || 0;
+    var actual   = parseFloat(actualEl.value);
+    if (isNaN(actual)) actual = 0;
+
+    // ---- Ticket price = expenses / estimate ----
+    var price = (estimate > 0) ? (total / estimate) : 0;
+
+    if (total <= 0){
+      priceEl.textContent = '$0';
+      priceNote.textContent = 'Add expenses to calculate the break-even price.';
+    } else if (estimate <= 0){
+      priceEl.textContent = '—';
+      priceNote.textContent = 'Set an estimated attendee count above 0.';
+    } else {
+      priceEl.textContent = moneyShort(price);
+      priceNote.textContent = 'Break-even across ' + estimate + ' attendee' + (estimate === 1 ? '' : 's') + '.';
+    }
+
+    // ---- Profit = actual * price - expenses ----
+    var profit = actual * price - total;
+    var rounded = Math.round(profit * 100) / 100;
+
+    profitAmount.textContent = (rounded < 0 ? '\u2212' : '') + money(Math.abs(rounded));
+
+    profitBlock.classList.remove('pos','neg','zero');
+    if (rounded > 0.004){
+      profitBlock.classList.add('pos');
+      profitPlain.textContent = 'You net this if ' + actual + ' attend (' +
+        (actual - estimate) + ' over your estimate).';
+    } else if (rounded < -0.004){
+      profitBlock.classList.add('neg');
+      profitPlain.textContent = 'You come up short if only ' + actual + ' attend (' +
+        (estimate - actual) + ' under your estimate).';
+    } else {
+      profitBlock.classList.add('zero');
+      if (total <= 0){
+        profitPlain.textContent = 'Add expenses and an attendee count to project profit.';
+      } else {
+        profitPlain.textContent = 'You break even at ' + actual + ' attendee' + (actual === 1 ? '' : 's') + '.';
+      }
+    }
+  }
+
+  function addExpense(){
+    var name = expName.value.trim();
+    var amount = parseFloat(expAmt.value);
+    if (!name){ expName.focus(); return; }
+    if (isNaN(amount) || amount < 0){ expAmt.focus(); return; }
+
+    expenses.push({ id: nextId++, name: name, amount: amount });
+    expName.value = '';
+    expAmt.value = '';
+    expName.focus();
+    recalc();
+  }
+
+  addBtn.addEventListener('click', addExpense);
+
+  // Enter key in either expense field adds the expense
+  [expName, expAmt].forEach(function(el){
+    el.addEventListener('keydown', function(ev){
+      if (ev.key === 'Enter'){ ev.preventDefault(); addExpense(); }
+    });
+  });
+
+  estimateEl.addEventListener('input', recalc);
+  actualEl.addEventListener('input', recalc);
+
+  recalc();
+})();
+</script>
+</body>
+</html>
