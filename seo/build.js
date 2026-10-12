@@ -505,6 +505,10 @@ function seoRuntime(eventMap) {
   ['pushState','replaceState'].forEach(function(m){var o=history[m];history[m]=function(){var r=o.apply(this,arguments);try{apply();}catch(x){}return r;};});
   window.addEventListener('popstate',apply);
   apply();
+  // point each "View event page" link at its event's own page
+  var queued=false;
+  function fixLinks(){queued=false;var a=document.querySelectorAll('a[data-ev-id]');for(var i=0;i<a.length;i++){var u=EV[a[i].getAttribute('data-ev-id')];var want=u?u.replace(SITE,''):'/events/';if(a[i].getAttribute('href')!==want)a[i].setAttribute('href',want);}}
+  try{new MutationObserver(function(){if(!queued){queued=true;requestAnimationFrame(fixLinks);}}).observe(document.documentElement,{childList:true,subtree:true});}catch(x){}
   // the page app can rewrite the title while it loads; put ours back
   try{new MutationObserver(function(){var q=new URLSearchParams(location.search),p=q.get('p')||'home';var t=(P[q.get('e')?'events':(P[p]?p:'home')]).t;if(document.title!==t)document.title=t;}).observe(document.querySelector('title')||document.head,{childList:true,subtree:true,characterData:true});}catch(x){}
 })();
@@ -525,6 +529,29 @@ function patchHero(html) {
     const i = html.indexOf(HERO_TEXT_SWAP[0], homeAt);
     if (i > 0) html = html.slice(0, i) + HERO_TEXT_SWAP[1] + html.slice(i + HERO_TEXT_SWAP[0].length);
   }
+  return html;
+}
+
+// Adds a "View event page" link to each card on the Events tab. The link's address is filled in
+// by the page script below (it knows which page belongs to which event).
+function patchEventCards(html) {
+  const at = html.indexOf('{{ isEvents }}');
+  if (at < 0 || html.includes('data-ev-id=')) return html;
+  const linkStyle = (extra) => `display:inline-block; ${extra} font-size:13px; letter-spacing:.06em; color:#8a6f2a; text-decoration:underline; text-underline-offset:3px;`;
+  const signupAt = html.indexOf('sc-camel-on-click="{{ item.signup }}"', at);
+  const signupEnd = signupAt > 0 ? html.indexOf('</span>', signupAt) : -1;
+  if (signupEnd > 0) {
+    const link = `<br><a data-ev-id="{{ item.id }}" href="/events/" style="${linkStyle('margin-top:14px;')}">View event page</a>`;
+    html = html.slice(0, signupEnd + 7) + link + html.slice(signupEnd + 7);
+  } else log('WARN: upcoming event cards not found — no event page links added');
+  const pastAt = html.indexOf('{{ pastEvents }}', at);
+  const pastLine = '{{ item.category }} · {{ item.locationLine }}</div>';
+  const pl = pastAt > 0 ? html.indexOf(pastLine, pastAt) : -1;
+  if (pl > 0) {
+    const link = `<a data-ev-id="{{ item.id }}" href="/events/" style="${linkStyle('margin-top:6px;')}">View event page</a>`;
+    html = html.slice(0, pl + pastLine.length) + link + html.slice(pl + pastLine.length);
+  }
+  log('added event page links to Events tab');
   return html;
 }
 
@@ -570,6 +597,7 @@ async function main() {
   html = html.replace(/(<head[^>]*>[\s\S]*?)<title>[\s\S]*?<\/title>/i, (m, a) => (a.includes('</head>') ? m : a)); // drop an old head <title>
   html = insertAfterHeadOpen(html, seoHead(ogImage, logo));
   html = patchHero(html);
+  html = patchEventCards(html);
   const eventMap = {};
   for (const e of events) eventMap[e.id] = e.url;
   const bodyEnd = html.toLowerCase().lastIndexOf('</body>');
