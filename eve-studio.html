@@ -175,10 +175,11 @@ to bloom.</textarea>
       </div>
       <div id="ctrl-border" style="display:none;">
         <div class="plabel" style="margin:10px 0 5px;">Image border</div>
-        <div id="border-btns" style="display:flex;gap:8px;">
+        <div id="border-btns" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
           <button class="bg-btn" data-border="#8EA86F"><span class="bg-sw" style="background:#8EA86F;"></span>Sage</button>
           <button class="bg-btn" data-border="#E9CF82"><span class="bg-sw" style="background:#E9CF82;"></span>Gold</button>
           <button class="bg-btn" data-border="#EFE4FA"><span class="bg-sw" style="background:#EFE4FA;"></span>Lilac</button>
+          <button class="bg-btn" data-border="none"><span class="bg-sw" style="background:transparent;border:1px dashed #DCF2C2;"></span>None</button>
         </div>
       </div>
       <button class="del-btn" id="del-btn">Remove selected</button>
@@ -554,7 +555,7 @@ function drawFloral(el,selected){
   ctx.rotate(el.rot*Math.PI/180);
   if(el.flipX)ctx.scale(-1,1);
   if(el.img){
-    ctx.drawImage(el.img,-el.w/2,-h/2,el.w,h);
+    ctx.drawImage((el.isImage?photoSrc(el.img):el.img),-el.w/2,-h/2,el.w,h);
   } else {
     ctx.fillStyle='rgba(142,168,111,0.10)';
     ctx.fillRect(-el.w/2,-h/2,el.w,h);
@@ -565,7 +566,7 @@ function drawFloral(el,selected){
     ctx.fillText('double click to upload image',0,0);
     ctx.textAlign='left';ctx.textBaseline='alphabetic';
   }
-  if(el.isImage){
+  if(el.isImage && el.border!=='none'){
     ctx.globalAlpha=1;
     ctx.strokeStyle=el.border||'#8EA86F';
     ctx.lineWidth=2.5;
@@ -686,6 +687,31 @@ function drawLogoFlourishes(w,h){
   ctx.globalAlpha=1;ctx.restore();
 }
 
+var SATURATION=1.2; // +20% on every template (preview + all exports)
+function saturateCanvas(c,s){
+  if(s===1) return;
+  var x=c.getContext('2d'), d=x.getImageData(0,0,c.width,c.height), p=d.data;
+  var a0=0.213+0.787*s, a1=0.715-0.715*s, a2=0.072-0.072*s,
+      b0=0.213-0.213*s, b1=0.715+0.285*s,
+      c0=0.213-0.213*s, c2=0.072+0.928*s;
+  for(var i=0;i<p.length;i+=4){
+    var r=p[i],g=p[i+1],b=p[i+2];
+    p[i]  =a0*r+a1*g+a2*b;
+    p[i+1]=b0*r+b1*g+a2*b;
+    p[i+2]=c0*r+a1*g+c2*b;
+  }
+  x.putImageData(d,0,0);
+}
+// Photos are pre-desaturated by 1/SATURATION so the global boost restores them
+// exactly (saturate(a)·saturate(b)=saturate(ab)) — only template colors get boosted.
+function photoSrc(img){
+  if(SATURATION===1||!img.complete||!img.naturalWidth) return img;
+  if(img.__unsat) return img.__unsat;
+  var c=document.createElement('canvas'); c.width=img.naturalWidth; c.height=img.naturalHeight;
+  c.getContext('2d').drawImage(img,0,0);
+  saturateCanvas(c,1/SATURATION);
+  img.__unsat=c; return c;
+}
 function render(){
   setSize();
   // Map design units (1080×H) onto the device-pixel backing store.
@@ -702,6 +728,7 @@ function render(){
     else drawTextEl(els[i],sel);
   }
   drawDividers();
+  saturateCanvas(canvas,SATURATION);
   if(dragging||resizing) drawAlignGuides();
   updateBgBtns();
 }
@@ -1237,6 +1264,7 @@ document.getElementById('savebtn').addEventListener('click',function(){
     else drawTextEl(el,false);
   }
   ctx=savedCtx; canvasScale=savedScale;
+  saturateCanvas(oc,SATURATION);
   var link=document.createElement('a');
   var suf=(currentTab==='tips')?'-slide'+(currentSlide+1):'';
   link.download='eve-'+currentTab+suf+'.png';
@@ -1357,6 +1385,7 @@ function pngWithDPI(dataURL,dpi){
 var printBtn=document.getElementById('printbtn');
 if(printBtn) printBtn.addEventListener('click',function(){
   var oc=renderPrintCanvas(300);
+  saturateCanvas(oc,SATURATION);
   var blob=pngWithDPI(oc.toDataURL('image/png'),300);
   var link=document.createElement('a');
   link.download='eve-event-flyer-print-4.25x5.5in-300dpi.png';
